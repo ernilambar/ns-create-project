@@ -4,6 +4,7 @@ import meow from 'meow';
 
 import fs from 'fs';
 import path from 'path';
+import Mustache from 'mustache';
 
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -39,13 +40,19 @@ const nsCopyFiles = ( projectName, flags ) => {
 
   let contents = fs.readFileSync( pkgMustache );
 
+  const data = {
+    project_name: projectName
+  }
+
+  const packageContent = Mustache.render( contents.toString(), data );
+
   // console.log( 'Contents: ', contents.toString() );
 
   const targetPackageFile = path.join( path.join(process.cwd(), projectName), 'packages.json' );
 
   // console.log( targetPackageFile );
 
-  fs.writeFileSync( targetPackageFile, contents.toString(), function (err) {
+  fs.writeFileSync( targetPackageFile, packageContent, function (err) {
     if ( err ) { throw err };
     console.log( 'File packages.json created.' );
   });
