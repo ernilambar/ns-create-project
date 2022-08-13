@@ -44,13 +44,22 @@ const nsCopyFiles = ( projectName, flags ) => {
     project_name: projectName
   }
 
-  const packageContent = Mustache.render( contents.toString(), data );
+  let packageContent = Mustache.render( contents.toString(), data );
 
-  // console.log( 'Contents: ', contents.toString() );
+  // Update packages.json file.
+  if ( true === flags.eslint ) {
+    let jsonPackageContent = JSON.parse( packageContent );
+
+    const newObj = {
+      "eslint": "eslint --quiet .",
+      "eslint:fix": "eslint --quiet --fix ."
+    }
+    jsonPackageContent.scripts = {...jsonPackageContent.scripts, ...newObj }
+
+    packageContent = JSON.stringify( jsonPackageContent, false, '  ' );
+  }
 
   const targetPackageFile = path.join( path.join(process.cwd(), projectName), 'packages.json' );
-
-  // console.log( targetPackageFile );
 
   fs.writeFileSync( targetPackageFile, packageContent, function (err) {
     if ( err ) { throw err };
