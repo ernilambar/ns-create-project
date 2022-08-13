@@ -11,12 +11,29 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const nsCreateProject = (flags) => {
-  nsCopyFiles();
+const nsCreateProject = ( projectName, flags ) => {
+  if ( ! projectName ) {
+    console.log( '<project-name> is required.' );
+    return;
+  }
+
+  nsCopyFiles( projectName, flags );
 }
 
-const nsCopyFiles = () => {
+const nsCopyFiles = ( projectName, flags ) => {
   console.log( 'Copying...' );
+
+  const destPath = process.cwd() + '/' + projectName;
+
+  const doesFolderExists = fs.existsSync( destPath );
+
+  if ( doesFolderExists ) {
+    console.log( 'Folder already exists.' );
+    return;
+  }
+
+  // Create directory.
+  fs.mkdirSync( destPath );
 
   let files = [
     { src: 'templates/npmrc.txt', dest: '.npmrc' },
@@ -28,7 +45,7 @@ const nsCopyFiles = () => {
 
   files.forEach( function( item, index ) {
     const srcFilePath = path.join( __dirname, item.src );
-    const destFile = item.dest;
+    const destFile = path.join(destPath, item.dest);
 
     try {
       if (fs.existsSync( srcFilePath ) ) {
@@ -43,16 +60,15 @@ const nsCopyFiles = () => {
   console.log( 'Filed copied successfully.' );
 }
 
-
 const cli = meow(`
   Usage
-    $ ns-create-project
+    $ ns-create-project <project-name>
 
   Options
     --eslint Include eslint
 
   Examples
-    $ ns-create-project --eslint
+    $ ns-create-project <project-name> --eslint
 `, {
   importMeta: import.meta,
   flags: {
@@ -62,4 +78,4 @@ const cli = meow(`
   }
 });
 
-nsCreateProject(cli.flags);
+nsCreateProject( cli.input[0], cli.flags );
