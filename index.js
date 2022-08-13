@@ -19,6 +19,7 @@ const nsCopyFiles = () => {
   console.log( 'Copying...' );
 
   let files = [
+    { src: 'templates/npmrc.txt', dest: '.npmrc' },
     { src: 'templates/editorconfig.txt', dest: '.editorconfig' },
     { src: 'templates/env.example.txt', dest: '.env.example' },
     { src: 'templates/env.example.txt', dest: '.env' },
