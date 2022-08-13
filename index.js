@@ -65,6 +65,11 @@ const nsCopyFiles = ( projectName, flags ) => {
     { src: 'templates/gitignore.txt', dest: '.gitignore' }
   ];
 
+  if ( true === flags.eslint ) {
+    files.push( { src: 'templates/eslintignore.txt', dest: '.eslintignore' } );
+    files.push( { src: 'templates/eslintrc.json', dest: '.eslintrc.json' } );
+  }
+
   files.forEach( function( item, index ) {
     const srcFilePath = path.join( __dirname, item.src );
     const destFile = path.join(destPath, item.dest);
