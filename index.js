@@ -2,29 +2,63 @@
 
 import meow from 'meow';
 
-const foo = (input, flags) => {
-  console.log( input, 'input' );
-  console.log( flags, 'flags' );
+import fs from 'fs';
+import path from 'path';
+
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const nsCreateProject = (input, flags) => {
+  const destPath = input ? input : '.';
+  // console.log( destPath, 'destPath' );
+  // console.log( flags, 'flags' );
+  nsCopyFiles();
 }
+
+const nsCopyFiles = () => {
+  console.log('Copying...');
+
+  let files = [
+    { src: 'templates/editorconfig.txt', dest: '.editorconfig' },
+    { src: 'templates/env.example.txt', dest: '.env.example' },
+    { src: 'templates/env.example.txt', dest: '.env' },
+    { src: 'templates/gitignore.txt', dest: '.gitignore' }
+  ];
+
+  files.forEach( function( item, index ) {
+    const srcFilePath = path.join( __dirname, item.src );
+    const destFile = item.dest;
+
+    try {
+      if (fs.existsSync( srcFilePath ) ) {
+        fs.copyFileSync( srcFilePath, destFile );
+      }
+    } catch(err) {
+      console.error(err);
+    }
+  });
+}
+
 
 const cli = meow(`
   Usage
-    $ foo <input>
+    $ ns-create-project path
 
   Options
-    --rainbow, -r  Include a rainbow
+    --eslint Include eslint
 
   Examples
-    $ foo unicorns --rainbow
-    🌈 unicorns 🌈
+    $ ns-create-project --eslint
 `, {
   importMeta: import.meta,
   flags: {
-    rainbow: {
-      type: 'boolean',
-      alias: 'r'
+    eslint: {
+      type: 'boolean'
     }
   }
 });
 
-foo(cli.input[0], cli.flags);
+nsCreateProject(cli.input[0], cli.flags);
