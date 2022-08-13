@@ -11,15 +11,12 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const nsCreateProject = (input, flags) => {
-  const destPath = input ? input : '.';
-  // console.log( destPath, 'destPath' );
-  // console.log( flags, 'flags' );
+const nsCreateProject = (flags) => {
   nsCopyFiles();
 }
 
 const nsCopyFiles = () => {
-  console.log('Copying...');
+  console.log( 'Copying...' );
 
   let files = [
     { src: 'templates/editorconfig.txt', dest: '.editorconfig' },
@@ -35,17 +32,20 @@ const nsCopyFiles = () => {
     try {
       if (fs.existsSync( srcFilePath ) ) {
         fs.copyFileSync( srcFilePath, destFile );
+        console.log( 'Copied file: ' + destFile );
       }
-    } catch(err) {
-      console.error(err);
+    } catch( err ) {
+      console.error( err );
     }
   });
+
+  console.log( 'Filed copied successfully.' );
 }
 
 
 const cli = meow(`
   Usage
-    $ ns-create-project path
+    $ ns-create-project
 
   Options
     --eslint Include eslint
@@ -61,4 +61,4 @@ const cli = meow(`
   }
 });
 
-nsCreateProject(cli.input[0], cli.flags);
+nsCreateProject(cli.flags);
