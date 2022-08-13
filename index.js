@@ -36,7 +36,7 @@ const nsCopyFiles = ( projectName, flags ) => {
   // Create directory.
   fs.mkdirSync( destPath );
 
-  const pkgMustache = path.join( __dirname, 'templates/packages.mustache' );
+  const pkgMustache = path.join( __dirname, 'templates/package.mustache' );
 
   let contents = fs.readFileSync( pkgMustache );
 
@@ -59,11 +59,11 @@ const nsCopyFiles = ( projectName, flags ) => {
     packageContent = JSON.stringify( jsonPackageContent, false, '  ' );
   }
 
-  const targetPackageFile = path.join( path.join(process.cwd(), projectName), 'packages.json' );
+  const targetPackageFile = path.join( path.join(process.cwd(), projectName), 'package.json' );
 
   fs.writeFileSync( targetPackageFile, packageContent, function (err) {
     if ( err ) { throw err };
-    console.log( 'File packages.json created.' );
+    console.log( 'File package.json created.' );
   });
 
   let files = [
