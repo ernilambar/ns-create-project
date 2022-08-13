@@ -54,7 +54,10 @@ const nsCopyFiles = ( projectName, flags ) => {
       "eslint": "eslint --quiet .",
       "eslint:fix": "eslint --quiet --fix ."
     }
-    jsonPackageContent.scripts = {...jsonPackageContent.scripts, ...newObj }
+
+    jsonPackageContent.scripts = {...jsonPackageContent.scripts, ...newObj };
+
+    jsonPackageContent.devDependencies = { "eslint": "^8.21.0" };
 
     packageContent = JSON.stringify( jsonPackageContent, false, '  ' );
   }
