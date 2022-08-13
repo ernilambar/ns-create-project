@@ -35,6 +35,21 @@ const nsCopyFiles = ( projectName, flags ) => {
   // Create directory.
   fs.mkdirSync( destPath );
 
+  const pkgMustache = path.join( __dirname, 'templates/packages.mustache' );
+
+  let contents = fs.readFileSync( pkgMustache );
+
+  // console.log( 'Contents: ', contents.toString() );
+
+  const targetPackageFile = path.join( path.join(process.cwd(), projectName), 'packages.json' );
+
+  // console.log( targetPackageFile );
+
+  fs.writeFileSync( targetPackageFile, contents.toString(), function (err) {
+    if ( err ) { throw err };
+    console.log( 'File packages.json created.' );
+  });
+
   let files = [
     { src: 'templates/npmrc.txt', dest: '.npmrc' },
     { src: 'templates/editorconfig.txt', dest: '.editorconfig' },
