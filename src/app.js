@@ -4,6 +4,7 @@ import path from 'path';
 import Mustache from 'mustache';
 
 import { nsSorter } from './utils.js';
+import { nsFilesList } from './helpers.js';
 
 const nsCreateProject = ( projectName, flags ) => {
 	if ( ! projectName ) {
@@ -131,28 +132,10 @@ const nsCopyFiles = ( projectName, flags ) => {
 		console.log( 'File package.json created.' );
 	} );
 
-	const files = [
-		{ src: 'templates/npmrc.txt', dest: '.npmrc' },
-		{ src: 'templates/editorconfig.txt', dest: '.editorconfig' },
-		{ src: 'templates/env.example.txt', dest: '.env.example' },
-		{ src: 'templates/env.example.txt', dest: '.env' },
-		{ src: 'templates/gitignore.txt', dest: '.gitignore' },
-	];
+  // Get files list.
+  const allFiles = nsFilesList( flags );
 
-	if ( true === flags.eslint ) {
-		files.push( { src: 'templates/eslintignore.txt', dest: '.eslintignore' } );
-		files.push( { src: 'templates/eslintrc.json', dest: '.eslintrc.json' } );
-	}
-
-	if ( true === flags.copyfiles ) {
-		files.push( { src: 'templates/copy-files-from-to.json', dest: 'copy-files-from-to.json' } );
-	}
-
-	if ( true === flags.prettier ) {
-		files.push( { src: 'templates/prettierignore.txt', dest: '.prettierignore' } );
-	}
-
-	files.forEach( function( item ) {
+	allFiles.forEach( function( item ) {
 		const srcFilePath = path.join( __basedir, item.src );
 		const destFile = path.join( destPath, item.dest );
 
