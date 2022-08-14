@@ -12,7 +12,7 @@ import { nsSorter } from './utils.js';
 
 const nsFilesList = ( addons ) => {
 	const files = [
-		{ src: 'templates/.npmrc', dest: '.npmrc' },
+		{ src: 'templates/npmrc.txt', dest: '.npmrc' },
 		{ src: 'templates/.editorconfig', dest: '.editorconfig' },
 		{ src: 'templates/.env.example', dest: '.env.example' },
 		{ src: 'templates/.env', dest: '.env' },
@@ -179,6 +179,10 @@ const nsProcessFiles = ( projectName, addons ) => {
 		if ( 'gitignore.txt' === fileName ) {
 			fileName = '.gitignore';
 		}
+
+    if ( 'npmrc.txt' === fileName ) {
+      fileName = '.npmrc';
+    }
 
 		try {
 			if ( ! fs.existsSync( destFile ) ) {
