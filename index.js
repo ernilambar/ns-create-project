@@ -19,7 +19,7 @@ const cli = meow( `
     $ npx ${ chalk.green( 'ns-create-project' ) } ${ chalk.cyan( '<project-name>' ) } ${ chalk.yellow( '[options]' ) }
 
   ${ chalk.cyan.bold( 'Options' ) }
-    ${ chalk.yellow( '-i, --include' ) } Include addons (${ chalk.yellow( 'eslint' ) } | ${ chalk.yellow( 'prettier' ) } | ${ chalk.yellow( 'copyfiles' ) } | ${ chalk.yellow( 'wpdeploy' ) }). Multiple addons should be comma separated. Use ${ chalk.yellow( 'all' ) } to include all addons.
+    ${ chalk.yellow( '-i, --include' ) } Include addons (${ chalk.yellow( 'eslint' ) } | ${ chalk.yellow( 'prettier' ) } | ${ chalk.yellow( 'copyfiles' ) } | ${ chalk.yellow( 'wpdeploy' ) } | ${ chalk.yellow( 'pot' ) }). Multiple addons should be comma separated. Use ${ chalk.yellow( 'all' ) } to include all addons.
 
   ${ chalk.cyan.bold( 'Other options' ) }
     ${ chalk.yellow( '-h, --help' ) }     Show usage information.
