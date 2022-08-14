@@ -1,23 +1,23 @@
 import fs from 'fs';
 import path from 'path';
 
-
 import Mustache from 'mustache';
+import chalk from 'chalk';
 
 import { nsSorter } from './utils.js';
 
 const nsFilesList = ( flags ) => {
   let files = [
-    { src: 'templates/npmrc.txt', dest: '.npmrc' },
-    { src: 'templates/editorconfig.txt', dest: '.editorconfig' },
-    { src: 'templates/env.example.txt', dest: '.env.example' },
-    { src: 'templates/env.example.txt', dest: '.env' },
+    { src: 'templates/.npmrc', dest: '.npmrc' },
+    { src: 'templates/.editorconfig', dest: '.editorconfig' },
+    { src: 'templates/.env.example', dest: '.env.example' },
+    { src: 'templates/.env.example', dest: '.env' },
     { src: 'templates/gitignore.txt', dest: '.gitignore' },
   ];
 
   if ( true === flags.eslint ) {
-    files.push( { src: 'templates/eslintignore.txt', dest: '.eslintignore' } );
-    files.push( { src: 'templates/eslintrc.json', dest: '.eslintrc.json' } );
+    files.push( { src: 'templates/.eslintignore', dest: '.eslintignore' } );
+    files.push( { src: 'templates/.eslintrc.json', dest: '.eslintrc.json' } );
   }
 
   if ( true === flags.copyfiles ) {
@@ -25,7 +25,7 @@ const nsFilesList = ( flags ) => {
   }
 
   if ( true === flags.prettier ) {
-    files.push( { src: 'templates/prettierignore.txt', dest: '.prettierignore' } );
+    files.push( { src: 'templates/.prettierignore', dest: '.prettierignore' } );
   }
 
   return files;
@@ -102,24 +102,34 @@ const nsProcessFiles = ( projectName, flags ) => {
   const doesFolderExists = fs.existsSync( destPath );
 
   if ( doesFolderExists ) {
-    console.log( 'Folder already exists.' );
-    return;
+    console.log( chalk.green( projectName ) + ' folder already exists. Updating in the existing folder.' );
+  } else {
+    // Create directory.
+    fs.mkdirSync( destPath );
   }
 
-  // Create directory.
-  fs.mkdirSync( destPath );
-
-  const pkgMustache = path.join( __basedir, 'templates/package.mustache' );
-
-  const contents = fs.readFileSync( pkgMustache );
-
-  const data = {
-    project_name: projectName,
-  };
-
-  let packageContent = Mustache.render( contents.toString(), data );
-
+  // File package.json.
   const targetPackageFile = path.join( path.join( process.cwd(), projectName ), 'package.json' );
+  let packageContent = '';
+
+  try {
+    if ( ! fs.existsSync( targetPackageFile ) ) {
+      const pkgMustache = path.join( __basedir, 'templates/package.mustache' );
+
+      const contents = fs.readFileSync( pkgMustache );
+
+      const data = {
+        project_name: projectName,
+      };
+
+      packageContent = Mustache.render( contents.toString(), data );
+    } else {
+      console.log( chalk.green( 'package.json' ) + ' already exists. Updating existing file.' );
+      packageContent = fs.readFileSync( targetPackageFile );
+    }
+  } catch ( err ) {
+    console.error( chalk.red( err ) );
+  }
 
   // Update packages.json file.
   if ( true === flags.eslint ) {
@@ -134,11 +144,12 @@ const nsProcessFiles = ( projectName, flags ) => {
     packageContent = nsUpdatePackageJsonContent( packageContent, 'copyfiles' );
   }
 
+  // Write package.json file.
   fs.writeFileSync( targetPackageFile, packageContent, function( err ) {
     if ( err ) {
       throw err;
     }
-    console.log( 'File package.json created.' );
+    console.log( `File ${chalk.green('package.json')} created.` );
   } );
 
   // Get files list.
@@ -148,17 +159,25 @@ const nsProcessFiles = ( projectName, flags ) => {
     const srcFilePath = path.join( __basedir, item.src );
     const destFile = path.join( destPath, item.dest );
 
+    let fileName = item.src.replace('templates/', '');
+
+    if ( 'gitignore.txt' === fileName ) {
+      fileName = '.gitignore';
+    }
+
     try {
-      if ( fs.existsSync( srcFilePath ) ) {
+      if ( ! fs.existsSync( destFile ) ) {
         fs.copyFileSync( srcFilePath, destFile );
-        console.log( 'Copied file: ' + destFile );
+        console.log( `Copied ${chalk.green(fileName)}` );
+      } else {
+        console.log( `Skipping ${chalk.green(fileName)}. Already exists.` );
       }
     } catch ( err ) {
-      console.error( err );
+      console.error( chalk.red( err ) );
     }
   } );
 
-  console.log( 'Filed copied successfully.' );
+  console.log( chalk.cyan( 'Completed.' ) );
 };
 
 export { nsProcessFiles };
