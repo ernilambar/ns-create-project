@@ -116,6 +116,22 @@ const nsUpdatePackageJsonContent = ( content, mode ) => {
 		jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
 	}
 
+	if ( 'pot' === mode ) {
+		const newScripts = {
+			pot: 'wpi18n makepot --domain-path=languages --exclude=vendor,deploy,node_modules',
+			textdomain: 'wpi18n addtextdomain --exclude=vendor,deploy,node_modules',
+		};
+
+		jsonContent.scripts = { ...jsonContent.scripts, ...newScripts };
+
+		const devDeps = {
+			'node-wp-i18n': '^1.2.6',
+		};
+
+		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
+		jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
+	}
+
 	return JSON.stringify( jsonContent, false, '  ' );
 };
 
@@ -180,9 +196,13 @@ const nsProcessFiles = ( projectName, addons ) => {
 		packageContent = nsUpdatePackageJsonContent( packageContent, 'copyfiles' );
 	}
 
-  if ( addons.includes( 'wpdeploy' ) ) {
-    packageContent = nsUpdatePackageJsonContent( packageContent, 'wpdeploy' );
-  }
+	if ( addons.includes( 'wpdeploy' ) ) {
+		packageContent = nsUpdatePackageJsonContent( packageContent, 'wpdeploy' );
+	}
+
+	if ( addons.includes( 'pot' ) ) {
+		packageContent = nsUpdatePackageJsonContent( packageContent, 'pot' );
+	}
 
 	// Write package.json file.
 	fs.writeFileSync( targetPackageFile, packageContent, function( err ) {
