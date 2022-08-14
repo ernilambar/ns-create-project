@@ -7,26 +7,37 @@ const { keyInYN } = readLineSync;
 import { nsProcessFiles } from './helpers.js';
 
 const nsCreateProject = ( projectName, flags ) => {
-	if ( ! projectName || 'undefined' == projectName ) {
+	let addons = [];
 
-    if (!keyInYN(`${ chalk.green( '<project-name>' )} is not passed. Do you want to update existing folder?`)) {
-      // Key that is not `Y` was pressed.
-      process.exit();
-    }
+	const allAddons = [ 'eslint', 'prettier', 'copyfiles' ];
 
-    nsUpdateExisting = true;
+	if ( flags.include ) {
+		if ( 'all' === flags.include ) {
+			addons = allAddons;
+		} else {
+			addons = flags.include.split( ',' );
+		}
 	}
 
-  if ( false === nsUpdateExisting ) {
-    const isValidName = ( /^([a-z\-\\_\d])+$/.test( projectName ) ) ? true : false;
+	if ( ! projectName || 'undefined' === projectName ) {
+		if ( ! keyInYN( `${ chalk.green( '<project-name>' ) } is not passed. Do you want to update existing folder?` ) ) {
+			// Key that is not `Y` was pressed.
+			process.exit();
+		}
 
-    if ( ! isValidName ) {
-      console.error( `${ chalk.red( 'ERROR:' )} Project name ${chalk.bold.green( projectName ) } is invalid. Accepts small letters, numbers, dash and underscores.` );
-      process.exit();
-    }
-  }
+		nsUpdateExisting = true;
+	}
 
-	nsProcessFiles( projectName, flags );
+	if ( false === nsUpdateExisting ) {
+		const isValidName = ( /^([a-z\-\\_\d])+$/.test( projectName ) ) ? true : false;
+
+		if ( ! isValidName ) {
+			console.error( `${ chalk.red( 'ERROR:' ) } Project name ${ chalk.bold.green( projectName ) } is invalid. Accepts small letters, numbers, dash and underscores.` );
+			process.exit();
+		}
+	}
+
+	nsProcessFiles( projectName, addons );
 };
 
 export { nsCreateProject };

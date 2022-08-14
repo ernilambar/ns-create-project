@@ -18,9 +18,7 @@ const cli = meow( `
     $ ns-create-project <project-name>
 
   Options
-    --eslint     Include eslint.
-    --prettier   Include prettier setup.
-    --copyfiles  Include copy files setup.
+    --include    Include addons (eslint|prettier|copyfiles). Multiple addons should be comma separated. Use all to include all addons.
     --help       Show help information.
     --version    Output the version number.
 
@@ -29,14 +27,10 @@ const cli = meow( `
 `, {
 	importMeta: import.meta,
 	flags: {
-		eslint: {
-			type: 'boolean',
-		},
-		prettier: {
-			type: 'boolean',
-		},
-		copyfiles: {
-			type: 'boolean',
+		include: {
+			type: 'string',
+			default: '',
+			alias: 'i',
 		},
 	},
 } );
