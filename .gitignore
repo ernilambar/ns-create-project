@@ -20,14 +20,6 @@ project.properties
 nbproject/private/
 tmp/
 
-# Environment files
-.env
-
-wp-cli.local.yml
-yarn-error.log
-npm-debug.log
-.pnpm-debug.log
-
 # Ignored extensions
 *~
 *.diff
@@ -41,9 +33,6 @@ npm-debug.log
 *.sw?
 *.vi
 *.zip
-
-# Sass
-.sass-cache/
 
 # Project folders
 docs/

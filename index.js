@@ -9,6 +9,7 @@ const __filename = fileURLToPath( import.meta.url );
 const __dirname = dirname( __filename );
 
 global.__basedir = __dirname;
+global.nsUpdateExisting = false;
 
 import { nsCreateProject } from './src/app.js';
 
