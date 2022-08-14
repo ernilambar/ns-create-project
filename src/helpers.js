@@ -32,6 +32,10 @@ const nsFilesList = ( addons ) => {
 		files.push( { src: 'templates/.prettierignore', dest: '.prettierignore' } );
 	}
 
+	if ( addons.includes( 'wpdeploy' ) ) {
+		files.push( { src: 'templates/Gruntfile.js', dest: 'Gruntfile.js' } );
+	}
+
 	return files;
 };
 
@@ -89,6 +93,23 @@ const nsUpdatePackageJsonContent = ( content, mode ) => {
 			'copy-files-from-to': '^3.2.2',
 			'cross-var': '^1.1.0',
 			shx: '^0.3.4',
+		};
+
+		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
+		jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
+	}
+
+	if ( 'wpdeploy' === mode ) {
+		const newScripts = {
+			prewpdeploy: 'pnpm run deploy',
+			wpdeploy: 'grunt wpdeploy',
+		};
+
+		jsonContent.scripts = { ...jsonContent.scripts, ...newScripts };
+
+		const devDeps = {
+			grunt: '^1.5.3',
+			'grunt-wp-deploy': '^2.1.2',
 		};
 
 		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
@@ -159,6 +180,10 @@ const nsProcessFiles = ( projectName, addons ) => {
 		packageContent = nsUpdatePackageJsonContent( packageContent, 'copyfiles' );
 	}
 
+  if ( addons.includes( 'wpdeploy' ) ) {
+    packageContent = nsUpdatePackageJsonContent( packageContent, 'wpdeploy' );
+  }
+
 	// Write package.json file.
 	fs.writeFileSync( targetPackageFile, packageContent, function( err ) {
 		if ( err ) {
@@ -180,9 +205,9 @@ const nsProcessFiles = ( projectName, addons ) => {
 			fileName = '.gitignore';
 		}
 
-    if ( 'npmrc.txt' === fileName ) {
-      fileName = '.npmrc';
-    }
+		if ( 'npmrc.txt' === fileName ) {
+			fileName = '.npmrc';
+		}
 
 		try {
 			if ( ! fs.existsSync( destFile ) ) {
