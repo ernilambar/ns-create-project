@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/ernilambar/ns-create-project#readme",
   "dependencies": {
+    "@babel/core": "^7.18.10",
+    "chalk": "^5.0.1",
     "meow": "^10.1.3",
     "mustache": "^4.2.0"
   },

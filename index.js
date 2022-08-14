@@ -17,12 +17,14 @@ const cli = meow( `
     $ ns-create-project <project-name>
 
   Options
-    --eslint Include eslint
-    --prettier Include prettier setup
-    --copyfiles Include copy files setup
+    --eslint     Include eslint.
+    --prettier   Include prettier setup.
+    --copyfiles  Include copy files setup.
+    --help       Show help information.
+    --version    Output the version number.
 
   Examples
-    $ ns-create-project <project-name> --eslint
+    $ ns-create-project hello-world
 `, {
 	importMeta: import.meta,
 	flags: {
