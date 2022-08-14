@@ -13,7 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/ernilambar/ns-create-project.git"
   },
-  "keywords": [],
+  "keywords": ["cli"],
   "author": "",
   "license": "MIT",
   "bugs": {
