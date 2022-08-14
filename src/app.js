@@ -3,97 +3,129 @@ import path from 'path';
 
 import Mustache from 'mustache';
 
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
 const nsCreateProject = ( projectName, flags ) => {
-  if ( ! projectName ) {
-    console.log( '<project-name> is required.' );
-    return;
-  }
+	if ( ! projectName ) {
+		console.log( '<project-name> is required.' );
+		return;
+	}
 
-  nsCopyFiles( projectName, flags );
-}
+	nsCopyFiles( projectName, flags );
+};
+
+const nsUpdatePackageJsonContent = ( content, mode ) => {
+	const jsonContent = JSON.parse( content );
+
+	if ( 'eslint' === mode ) {
+		const newScripts = {
+			eslint: 'eslint --quiet .',
+			'eslint:fix': 'eslint --quiet --fix .',
+		};
+
+		jsonContent.scripts = { ...jsonContent.scripts, ...newScripts };
+
+		const devDeps = {
+			'@wordpress/eslint-plugin': '^12.8.0',
+			eslint: '^8.21.0',
+		};
+
+		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
+	}
+
+	if ( 'copyfiles' === mode ) {
+		const newScripts = {
+			deploy: 'shx rm -rf deploy/ && shx mkdir deploy && copy-files-from-to && cd deploy/ && cross-var shx mv temp $npm_package_name && cross-var bestzip ../$npm_package_name.zip * && cd .. && cross-var shx mv $npm_package_name.zip deploy/',
+		};
+
+		jsonContent.scripts = { ...jsonContent.scripts, ...newScripts };
+
+		const devDeps = {
+			bestzip: '^2.2.1',
+			'copy-files-from-to': '^3.2.2',
+			'cross-var': '^1.1.0',
+			shx: '^0.3.4',
+		};
+
+		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
+	}
+
+	return JSON.stringify( jsonContent, false, '  ' );
+};
 
 const nsCopyFiles = ( projectName, flags ) => {
-  console.log( 'Copying...' );
+	console.log( 'Copying...' );
 
-  const destPath = path.join( process.cwd(), projectName );
+	const destPath = path.join( process.cwd(), projectName );
 
-  const doesFolderExists = fs.existsSync( destPath );
+	const doesFolderExists = fs.existsSync( destPath );
 
-  if ( doesFolderExists ) {
-    console.log( 'Folder already exists.' );
-    return;
-  }
+	if ( doesFolderExists ) {
+		console.log( 'Folder already exists.' );
+		return;
+	}
 
-  // Create directory.
-  fs.mkdirSync( destPath );
+	// Create directory.
+	fs.mkdirSync( destPath );
 
-  const pkgMustache = path.join( __basedir, 'templates/package.mustache' );
+	const pkgMustache = path.join( __basedir, 'templates/package.mustache' );
 
-  let contents = fs.readFileSync( pkgMustache );
+	const contents = fs.readFileSync( pkgMustache );
 
-  const data = {
-    project_name: projectName
-  }
+	const data = {
+		project_name: projectName,
+	};
 
-  let packageContent = Mustache.render( contents.toString(), data );
+	let packageContent = Mustache.render( contents.toString(), data );
 
-  // Update packages.json file.
-  if ( true === flags.eslint ) {
-    let jsonPackageContent = JSON.parse( packageContent );
+	const targetPackageFile = path.join( path.join( process.cwd(), projectName ), 'package.json' );
 
-    const newObj = {
-      "eslint": "eslint --quiet .",
-      "eslint:fix": "eslint --quiet --fix ."
-    }
+	// Update packages.json file.
+	if ( true === flags.eslint ) {
+		packageContent = nsUpdatePackageJsonContent( packageContent, 'eslint' );
+	}
 
-    jsonPackageContent.scripts = {...jsonPackageContent.scripts, ...newObj };
+	if ( true === flags.copyfiles ) {
+		packageContent = nsUpdatePackageJsonContent( packageContent, 'copyfiles' );
+	}
 
-    jsonPackageContent.devDependencies = { "eslint": "^8.21.0" };
+	fs.writeFileSync( targetPackageFile, packageContent, function( err ) {
+		if ( err ) {
+			throw err;
+		}
+		console.log( 'File package.json created.' );
+	} );
 
-    packageContent = JSON.stringify( jsonPackageContent, false, '  ' );
-  }
+	const files = [
+		{ src: 'templates/npmrc.txt', dest: '.npmrc' },
+		{ src: 'templates/editorconfig.txt', dest: '.editorconfig' },
+		{ src: 'templates/env.example.txt', dest: '.env.example' },
+		{ src: 'templates/env.example.txt', dest: '.env' },
+		{ src: 'templates/gitignore.txt', dest: '.gitignore' },
+	];
 
-  const targetPackageFile = path.join( path.join(process.cwd(), projectName), 'package.json' );
+	if ( true === flags.eslint ) {
+		files.push( { src: 'templates/eslintignore.txt', dest: '.eslintignore' } );
+		files.push( { src: 'templates/eslintrc.json', dest: '.eslintrc.json' } );
+	}
 
-  fs.writeFileSync( targetPackageFile, packageContent, function (err) {
-    if ( err ) { throw err };
-    console.log( 'File package.json created.' );
-  });
+	if ( true === flags.copyfiles ) {
+		files.push( { src: 'templates/copy-files-from-to.json', dest: 'copy-files-from-to.json' } );
+	}
 
-  let files = [
-    { src: 'templates/npmrc.txt', dest: '.npmrc' },
-    { src: 'templates/editorconfig.txt', dest: '.editorconfig' },
-    { src: 'templates/env.example.txt', dest: '.env.example' },
-    { src: 'templates/env.example.txt', dest: '.env' },
-    { src: 'templates/gitignore.txt', dest: '.gitignore' }
-  ];
+	files.forEach( function( item ) {
+		const srcFilePath = path.join( __basedir, item.src );
+		const destFile = path.join( destPath, item.dest );
 
-  if ( true === flags.eslint ) {
-    files.push( { src: 'templates/eslintignore.txt', dest: '.eslintignore' } );
-    files.push( { src: 'templates/eslintrc.json', dest: '.eslintrc.json' } );
-  }
+		try {
+			if ( fs.existsSync( srcFilePath ) ) {
+				fs.copyFileSync( srcFilePath, destFile );
+				console.log( 'Copied file: ' + destFile );
+			}
+		} catch ( err ) {
+			console.error( err );
+		}
+	} );
 
-  files.forEach( function( item, index ) {
-    const srcFilePath = path.join( __basedir, item.src );
-    const destFile = path.join(destPath, item.dest);
-
-    try {
-      if (fs.existsSync( srcFilePath ) ) {
-        fs.copyFileSync( srcFilePath, destFile );
-        console.log( 'Copied file: ' + destFile );
-      }
-    } catch( err ) {
-      console.error( err );
-    }
-  });
-
-  console.log( 'Filed copied successfully.' );
-}
+	console.log( 'Filed copied successfully.' );
+};
 
 export { nsCreateProject };
