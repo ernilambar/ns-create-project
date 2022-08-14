@@ -18,6 +18,7 @@ const cli = meow( `
 
   Options
     --eslint Include eslint
+    --prettier Include prettier setup
     --copyfiles Include copy files setup
 
   Examples
@@ -26,6 +27,9 @@ const cli = meow( `
 	importMeta: import.meta,
 	flags: {
 		eslint: {
+			type: 'boolean',
+		},
+		prettier: {
 			type: 'boolean',
 		},
 		copyfiles: {

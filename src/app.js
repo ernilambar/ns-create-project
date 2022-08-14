@@ -3,6 +3,8 @@ import path from 'path';
 
 import Mustache from 'mustache';
 
+import { nsSorter } from './utils.js';
+
 const nsCreateProject = ( projectName, flags ) => {
 	if ( ! projectName ) {
 		console.log( '<project-name> is required.' );
@@ -13,7 +15,7 @@ const nsCreateProject = ( projectName, flags ) => {
 };
 
 const nsUpdatePackageJsonContent = ( content, mode ) => {
-	const jsonContent = JSON.parse( content );
+	let jsonContent = JSON.parse( content );
 
 	if ( 'eslint' === mode ) {
 		const newScripts = {
@@ -29,6 +31,29 @@ const nsUpdatePackageJsonContent = ( content, mode ) => {
 		};
 
 		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
+		jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
+	}
+
+	if ( 'prettier' === mode ) {
+		const newParams = {
+			prettier: '@wordpress/prettier-config',
+		};
+
+		jsonContent = { ...jsonContent, ...newParams };
+
+		const newScripts = {
+			format: 'prettier --write "src/**/*.scss"',
+		};
+
+		jsonContent.scripts = { ...jsonContent.scripts, ...newScripts };
+
+		const devDeps = {
+			'@wordpress/prettier-config': '^1.4.0',
+			prettier: '^2.7.1',
+		};
+
+		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
+		jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
 	}
 
 	if ( 'copyfiles' === mode ) {
@@ -46,6 +71,7 @@ const nsUpdatePackageJsonContent = ( content, mode ) => {
 		};
 
 		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
+		jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
 	}
 
 	return JSON.stringify( jsonContent, false, '  ' );
@@ -83,6 +109,10 @@ const nsCopyFiles = ( projectName, flags ) => {
 		packageContent = nsUpdatePackageJsonContent( packageContent, 'eslint' );
 	}
 
+	if ( true === flags.prettier ) {
+		packageContent = nsUpdatePackageJsonContent( packageContent, 'prettier' );
+	}
+
 	if ( true === flags.copyfiles ) {
 		packageContent = nsUpdatePackageJsonContent( packageContent, 'copyfiles' );
 	}
@@ -109,6 +139,10 @@ const nsCopyFiles = ( projectName, flags ) => {
 
 	if ( true === flags.copyfiles ) {
 		files.push( { src: 'templates/copy-files-from-to.json', dest: 'copy-files-from-to.json' } );
+	}
+
+	if ( true === flags.prettier ) {
+		files.push( { src: 'templates/prettierignore.txt', dest: '.prettierignore' } );
 	}
 
 	files.forEach( function( item ) {
