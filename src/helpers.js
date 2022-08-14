@@ -4,6 +4,10 @@ import path from 'path';
 import Mustache from 'mustache';
 import chalk from 'chalk';
 
+import readLineSync from 'readline-sync';
+
+const { keyInYN } = readLineSync;
+
 import { nsSorter } from './utils.js';
 
 const nsFilesList = ( flags ) => {
@@ -11,7 +15,7 @@ const nsFilesList = ( flags ) => {
     { src: 'templates/.npmrc', dest: '.npmrc' },
     { src: 'templates/.editorconfig', dest: '.editorconfig' },
     { src: 'templates/.env.example', dest: '.env.example' },
-    { src: 'templates/.env.example', dest: '.env' },
+    { src: 'templates/.env', dest: '.env' },
     { src: 'templates/gitignore.txt', dest: '.gitignore' },
   ];
 
@@ -95,21 +99,32 @@ const nsUpdatePackageJsonContent = ( content, mode ) => {
 };
 
 const nsProcessFiles = ( projectName, flags ) => {
+  let destPath = '';
+
   console.log( 'Copying...' );
 
-  const destPath = path.join( process.cwd(), projectName );
-
-  const doesFolderExists = fs.existsSync( destPath );
-
-  if ( doesFolderExists ) {
-    console.log( chalk.green( projectName ) + ' folder already exists. Updating in the existing folder.' );
+  if ( true === nsUpdateExisting ) {
+    destPath = process.cwd();
   } else {
-    // Create directory.
-    fs.mkdirSync( destPath );
+    destPath = path.join( process.cwd(), projectName );
+  }
+
+  if ( false === nsUpdateExisting ) {
+    const doesFolderExists = fs.existsSync( destPath );
+
+    if ( doesFolderExists ) {
+      if (!keyInYN(`${ chalk.bold.green( projectName )} folder already exists. Do you want to update existing folder?`)) {
+        process.exit();
+      }
+    } else {
+      // Create directory.
+      fs.mkdirSync( destPath );
+    }
   }
 
   // File package.json.
-  const targetPackageFile = path.join( path.join( process.cwd(), projectName ), 'package.json' );
+  const targetPackageFile = path.join( destPath, 'package.json' );
+
   let packageContent = '';
 
   try {

@@ -1,18 +1,29 @@
 import chalk from 'chalk';
 
+import readLineSync from 'readline-sync';
+
+const { keyInYN } = readLineSync;
+
 import { nsProcessFiles } from './helpers.js';
 
 const nsCreateProject = ( projectName, flags ) => {
-	if ( ! projectName ) {
-		console.error( `${ chalk.red( 'ERROR:' )} ${chalk.green( '<project-name>' ) } is required.` );
-		return;
+	if ( ! projectName || 'undefined' == projectName ) {
+
+    if (!keyInYN(`${ chalk.green( '<project-name>' )} is not passed. Do you want to update existing folder?`)) {
+      // Key that is not `Y` was pressed.
+      process.exit();
+    }
+
+    nsUpdateExisting = true;
 	}
 
-  const isValidName = ( /^([a-z\-\\_\d])+$/.test( projectName ) ) ? true : false;
+  if ( false === nsUpdateExisting ) {
+    const isValidName = ( /^([a-z\-\\_\d])+$/.test( projectName ) ) ? true : false;
 
-  if ( ! isValidName ) {
-    console.error( `${ chalk.red( 'ERROR:' )} ${chalk.green( '<project-name>' ) } is invalid. Accepts small letters, numbers, dash and underscores.` );
-    return;
+    if ( ! isValidName ) {
+      console.error( `${ chalk.red( 'ERROR:' )} Project name ${chalk.bold.green( projectName ) } is invalid. Accepts small letters, numbers, dash and underscores.` );
+      process.exit();
+    }
   }
 
 	nsProcessFiles( projectName, flags );
