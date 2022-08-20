@@ -9,6 +9,7 @@
   "globals": {
     "__basedir": true,
     "nsUpdateExisting": true,
+    "allNCPAddons": true,
     "jQuery": true
   },
   "rules": {
