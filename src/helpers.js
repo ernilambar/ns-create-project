@@ -26,6 +26,10 @@ const nsFilesList = ( addons ) => {
 		files.push( { src: 'templates/.eslintrc.json', dest: '.eslintrc.json' } );
 	}
 
+	if ( addons.includes( 'husky' ) ) {
+		files.push( { src: 'templates/.lintstagedrc', dest: '.lintstagedrc' } );
+	}
+
 	if ( addons.includes( 'copyfiles' ) ) {
 		files.push( { src: 'templates/copy-files-from-to.json', dest: 'copy-files-from-to.json' } );
 	}
@@ -63,6 +67,24 @@ const nsUpdatePackageJsonContent = ( content, mode ) => {
 		const devDeps = {
 			'@wordpress/eslint-plugin': '^12.8.0',
 			eslint: '^8.21.0',
+		};
+
+		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
+		jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
+	}
+
+	if ( 'husky' === mode ) {
+		const newScripts = {
+			"prepare": "husky install",
+		};
+
+		jsonContent.scripts = { ...jsonContent.scripts, ...newScripts };
+
+		const devDeps = {
+			"husky": "^8.0.1",
+			"lint-staged": "^13.0.3",
+			"@commitlint/cli": "^17.0.3",
+	    "@commitlint/config-conventional": "^17.0.3"
 		};
 
 		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
@@ -247,6 +269,10 @@ const nsProcessFiles = ( projectName, addons ) => {
 		packageContent = nsUpdatePackageJsonContent( packageContent, 'eslint' );
 	}
 
+	if ( addons.includes( 'husky' ) ) {
+		packageContent = nsUpdatePackageJsonContent( packageContent, 'husky' );
+	}
+
 	if ( addons.includes( 'prettier' ) ) {
 		packageContent = nsUpdatePackageJsonContent( packageContent, 'prettier' );
 	}
@@ -309,6 +335,16 @@ const nsProcessFiles = ( projectName, addons ) => {
 	} );
 
 	console.log( chalk.cyan( 'Completed.' ) );
+
+	if ( addons.includes( 'husky' ) ) {
+		const huskyMessage = `
+${ chalk.cyan.bold( "INFO" ) }: ${ chalk.cyan( "After package installation, run following commands to setup husky hooks." ) }
+
+${ chalk.yellow( "npx husky add .husky/commit-msg 'npx commitlint --edit $1'" ) }
+${ chalk.yellow( "npx husky add .husky/pre-commit 'npx lint-staged'" ) }
+`;
+		console.log( huskyMessage );
+	};
 };
 
 export { nsProcessFiles };
