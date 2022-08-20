@@ -8,7 +8,7 @@ import readLineSync from 'readline-sync';
 
 const { keyInYN } = readLineSync;
 
-import { nsSorter, nsMergeObjects } from './utils.js';
+import { ncpSorter, ncpMergeObjects } from './utils.js';
 
 const nsFilesList = ( addons ) => {
 	const files = [];
@@ -21,6 +21,10 @@ const nsFilesList = ( addons ) => {
 		files.push( { src: 'templates/gitignore.txt', dest: '.gitignore' } );
 	}
 
+	if ( addons.includes( 'copyfiles' ) ) {
+		files.push( { src: 'templates/copy-files-from-to.json', dest: 'copy-files-from-to.json' } );
+	}
+
 	if ( addons.includes( 'eslint' ) ) {
 		files.push( { src: 'templates/.eslintignore', dest: '.eslintignore' } );
 		files.push( { src: 'templates/.eslintrc.json', dest: '.eslintrc.json' } );
@@ -30,16 +34,12 @@ const nsFilesList = ( addons ) => {
 		files.push( { src: 'templates/.lintstagedrc', dest: '.lintstagedrc' } );
 	}
 
-	if ( addons.includes( 'copyfiles' ) ) {
-		files.push( { src: 'templates/copy-files-from-to.json', dest: 'copy-files-from-to.json' } );
+	if ( addons.includes( 'phpcs' ) ) {
+		files.push( { src: 'templates/.phpcs.xml.dist', dest: '.phpcs.xml.dist' } );
 	}
 
 	if ( addons.includes( 'prettier' ) ) {
 		files.push( { src: 'templates/.prettierignore', dest: '.prettierignore' } );
-	}
-
-	if ( addons.includes( 'wpdeploy' ) ) {
-		files.push( { src: 'templates/Gruntfile.js', dest: 'Gruntfile.js' } );
 	}
 
 	if ( addons.includes( 'version' ) ) {
@@ -50,6 +50,10 @@ const nsFilesList = ( addons ) => {
 		files.push( { src: 'templates/webpack.config.js', dest: 'webpack.config.js' } );
 	}
 
+	if ( addons.includes( 'wpdeploy' ) ) {
+		files.push( { src: 'templates/Gruntfile.js', dest: 'Gruntfile.js' } );
+	}
+
 	return files;
 };
 
@@ -57,23 +61,23 @@ const nsUpdatePackageJsonContent = ( content, mode ) => {
 	let jsonContent = JSON.parse( content );
 
 	if ( 'eslint' === mode ) {
-		jsonContent.scripts = nsMergeObjects( jsonContent.scripts, {
+		jsonContent.scripts = ncpMergeObjects( jsonContent.scripts, {
 			eslint: 'eslint --quiet .',
 			'eslint:fix': 'eslint --quiet --fix .',
 		} );
 
-		jsonContent.devDependencies = nsMergeObjects( jsonContent.devDependencies, {
+		jsonContent.devDependencies = ncpMergeObjects( jsonContent.devDependencies, {
 			'@wordpress/eslint-plugin': '^12.8.0',
 			eslint: '^8.21.0',
 		} );
 	}
 
 	if ( 'husky' === mode ) {
-		jsonContent.scripts = nsMergeObjects( jsonContent.scripts, {
+		jsonContent.scripts = ncpMergeObjects( jsonContent.scripts, {
 			prepare: 'husky install',
 		} );
 
-		jsonContent.devDependencies = nsMergeObjects( jsonContent.devDependencies, {
+		jsonContent.devDependencies = ncpMergeObjects( jsonContent.devDependencies, {
 			husky: '^8.0.1',
 			'lint-staged': '^13.0.3',
 			'@commitlint/cli': '^17.0.3',
@@ -82,27 +86,27 @@ const nsUpdatePackageJsonContent = ( content, mode ) => {
 	}
 
 	if ( 'prettier' === mode ) {
-		jsonContent = nsMergeObjects( jsonContent, {
+		jsonContent = ncpMergeObjects( jsonContent, {
 			prettier: '@wordpress/prettier-config',
 		} );
 
-		jsonContent.scripts = nsMergeObjects( jsonContent.scripts, {
+		jsonContent.scripts = ncpMergeObjects( jsonContent.scripts, {
 			format: 'prettier --write "src/**/*.scss"',
 		} );
 
-		jsonContent.devDependencies = nsMergeObjects( jsonContent.devDependencies, {
+		jsonContent.devDependencies = ncpMergeObjects( jsonContent.devDependencies, {
 			'@wordpress/prettier-config': '^1.4.0',
 			prettier: '^2.7.1',
 		} );
 	}
 
 	if ( 'copyfiles' === mode ) {
-		jsonContent.scripts = nsMergeObjects( jsonContent.scripts, {
+		jsonContent.scripts = ncpMergeObjects( jsonContent.scripts, {
 			predeploy: 'shx rm -rf vendor/ && composer install --no-dev --no-scripts -o',
 			deploy: 'shx rm -rf deploy/ && shx mkdir deploy && copy-files-from-to && cd deploy/ && cross-var shx mv temp $npm_package_name && cross-var bestzip ../$npm_package_name.zip * && cd .. && cross-var shx mv $npm_package_name.zip deploy/',
 		} );
 
-		jsonContent.devDependencies = nsMergeObjects( jsonContent.devDependencies, {
+		jsonContent.devDependencies = ncpMergeObjects( jsonContent.devDependencies, {
 			bestzip: '^2.2.1',
 			'copy-files-from-to': '^3.2.2',
 			'cross-var': '^1.1.0',
@@ -111,46 +115,46 @@ const nsUpdatePackageJsonContent = ( content, mode ) => {
 	}
 
 	if ( 'wpdeploy' === mode ) {
-		jsonContent.scripts = nsMergeObjects( jsonContent.scripts, {
+		jsonContent.scripts = ncpMergeObjects( jsonContent.scripts, {
 			prewpdeploy: 'pnpm run deploy',
 			wpdeploy: 'grunt wpdeploy',
 		} );
 
-		jsonContent.devDependencies = nsMergeObjects( jsonContent.devDependencies, {
+		jsonContent.devDependencies = ncpMergeObjects( jsonContent.devDependencies, {
 			grunt: '^1.5.3',
 			'grunt-wp-deploy': '^2.1.2',
 		} );
 	}
 
 	if ( 'pot' === mode ) {
-		jsonContent.scripts = nsMergeObjects( jsonContent.scripts, {
+		jsonContent.scripts = ncpMergeObjects( jsonContent.scripts, {
 			pot: 'wpi18n makepot --domain-path=languages --exclude=vendor,deploy,node_modules',
 			textdomain: 'wpi18n addtextdomain --exclude=vendor,deploy,node_modules',
 		} );
 
-		jsonContent.devDependencies = nsMergeObjects( jsonContent.devDependencies, {
+		jsonContent.devDependencies = ncpMergeObjects( jsonContent.devDependencies, {
 			'node-wp-i18n': '^1.2.6',
 		} );
 	}
 
 	if ( 'version' === mode ) {
-		jsonContent.scripts = nsMergeObjects( jsonContent.scripts, {
+		jsonContent.scripts = ncpMergeObjects( jsonContent.scripts, {
 			version: 'easy-replace-in-files',
 		} );
 
-		jsonContent.devDependencies = nsMergeObjects( jsonContent.devDependencies, {
+		jsonContent.devDependencies = ncpMergeObjects( jsonContent.devDependencies, {
 			'easy-replace-in-files': '^1.0.2',
 		} );
 	}
 
 	if ( 'webpack' === mode ) {
-		jsonContent.scripts = nsMergeObjects( jsonContent.scripts, {
+		jsonContent.scripts = ncpMergeObjects( jsonContent.scripts, {
 			dev: 'webpack --watch',
 			build: 'webpack',
 			prod: 'NODE_ENV=production webpack',
 		} );
 
-		jsonContent.devDependencies = nsMergeObjects( jsonContent.devDependencies, {
+		jsonContent.devDependencies = ncpMergeObjects( jsonContent.devDependencies, {
 			'@babel/cli': '^7.18.10',
 			'@babel/core': '^7.18.10',
 			'@babel/preset-env': '^7.18.10',
@@ -171,7 +175,45 @@ const nsUpdatePackageJsonContent = ( content, mode ) => {
 		} );
 	}
 
-	jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
+	jsonContent.devDependencies = ncpSorter( jsonContent.devDependencies );
+
+	return JSON.stringify( jsonContent, false, '  ' );
+};
+
+const nsUpdateComposerJsonContent = ( jsonContent ) => {
+	// Scripts.
+	if ( ! ( jsonContent.hasOwnProperty( 'scripts' ) ) ) {
+		jsonContent.scripts = {};
+	}
+
+	jsonContent.scripts = ncpMergeObjects( jsonContent.scripts, {
+		'pc:info': 'phpcs -i',
+		'pc:config': 'phpcs --config-show',
+		lint: 'phpcs .',
+		'lint:fix': 'phpcbf .',
+	} );
+
+	// Require-dev.
+	if ( ! ( jsonContent.hasOwnProperty( 'require-dev' ) ) ) {
+		jsonContent[ 'require-dev' ] = {};
+	}
+
+	jsonContent[ 'require-dev' ] = ncpMergeObjects( jsonContent[ 'require-dev' ], {
+		'dealerdirect/phpcodesniffer-composer-installer': '^0.7.2',
+		'phpcompatibility/phpcompatibility-wp': '^2.1',
+		'wp-coding-standards/wpcs': '^2.3',
+	} );
+
+	// Config.
+	if ( ! ( jsonContent.hasOwnProperty( 'config' ) ) ) {
+		jsonContent.config = {
+			'allow-plugins': {},
+		};
+	}
+
+	jsonContent.config[ 'allow-plugins' ] = ncpMergeObjects( jsonContent.config[ 'allow-plugins' ], {
+		'dealerdirect/phpcodesniffer-composer-installer': true,
+	} );
 
 	return JSON.stringify( jsonContent, false, '  ' );
 };
@@ -200,42 +242,82 @@ const nsProcessFiles = ( projectName, addons ) => {
 		}
 	}
 
-	// File package.json.
-	const targetPackageFile = path.join( destPath, 'package.json' );
+	const isNonPackageMode = ( 1 === addons.length && addons.includes( 'phpcs' ) ) ? true : false;
 
-	let packageContent = '';
+	if ( true !== isNonPackageMode ) {
+		// File package.json.
+		const targetPackageFile = path.join( destPath, 'package.json' );
 
-	try {
-		if ( ! fs.existsSync( targetPackageFile ) ) {
-			const pkgMustache = path.join( __basedir, 'templates/package.mustache' );
+		let packageContent = '';
 
-			const contents = fs.readFileSync( pkgMustache );
+		try {
+			if ( ! fs.existsSync( targetPackageFile ) ) {
+				const pkgMustache = path.join( __basedir, 'templates/package.mustache' );
 
-			const data = {
-				project_name: projectName,
-			};
+				const contents = fs.readFileSync( pkgMustache );
 
-			packageContent = Mustache.render( contents.toString(), data );
-		} else {
-			console.log( chalk.green( 'package.json' ) + ' already exists. Updating existing file.' );
-			packageContent = fs.readFileSync( targetPackageFile );
+				const data = {
+					project_name: projectName,
+				};
+
+				packageContent = Mustache.render( contents.toString(), data );
+			} else {
+				console.log( chalk.green( 'package.json' ) + ' already exists. Updating existing file.' );
+				packageContent = fs.readFileSync( targetPackageFile );
+			}
+		} catch ( err ) {
+			console.error( chalk.red( err ) );
 		}
-	} catch ( err ) {
-		console.error( chalk.red( err ) );
+
+		// Update packages.json file.
+		addons.forEach( function( addon ) {
+			packageContent = nsUpdatePackageJsonContent( packageContent, addon );
+		} );
+
+		// Write package.json file.
+		fs.writeFileSync( targetPackageFile, packageContent, function( err ) {
+			if ( err ) {
+				throw err;
+			}
+			console.log( `File ${ chalk.green( 'package.json' ) } created.` );
+		} );
 	}
 
-	// Update packages.json file.
-	addons.forEach( function( addon ) {
-		packageContent = nsUpdatePackageJsonContent( packageContent, addon );
-	} );
+	// For composer file.
+	if ( addons.includes( 'phpcs' ) ) {
+		const targetComposerFile = path.join( destPath, 'composer.json' );
 
-	// Write package.json file.
-	fs.writeFileSync( targetPackageFile, packageContent, function( err ) {
-		if ( err ) {
-			throw err;
+		let composerContent = '';
+
+		try {
+			if ( ! fs.existsSync( targetComposerFile ) ) {
+				const pkgMustache = path.join( __basedir, 'templates/composer.mustache' );
+
+				const contents = fs.readFileSync( pkgMustache );
+
+				const data = {
+					project_name: projectName,
+				};
+
+				composerContent = Mustache.render( contents.toString(), data );
+			} else {
+				console.log( chalk.green( 'composer.json' ) + ' already exists. Updating existing file.' );
+				composerContent = fs.readFileSync( targetComposerFile );
+			}
+		} catch ( err ) {
+			console.error( chalk.red( err ) );
 		}
-		console.log( `File ${ chalk.green( 'package.json' ) } created.` );
-	} );
+
+		composerContent = nsUpdateComposerJsonContent( JSON.parse( composerContent ) );
+
+		// Write composer.json file.
+		fs.writeFileSync( targetComposerFile, composerContent, function( err ) {
+			if ( err ) {
+				throw err;
+			}
+			console.log( `File ${ chalk.green( 'composer.json' ) } created.` );
+		} );
+	}
 
 	// Get files list.
 	const allFiles = nsFilesList( addons );

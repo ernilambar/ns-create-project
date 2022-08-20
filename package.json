@@ -1,6 +1,6 @@
 {
   "name": "ns-create-project",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "",
   "main": "index.js",
   "type": "module",
@@ -16,7 +16,9 @@
     "type": "git",
     "url": "git+https://github.com/ernilambar/ns-create-project.git"
   },
-  "keywords": ["cli"],
+  "keywords": [
+    "cli", "template"
+  ],
   "author": "",
   "license": "MIT",
   "bugs": {
