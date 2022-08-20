@@ -11,6 +11,7 @@ const __dirname = dirname( __filename );
 
 global.__basedir = __dirname;
 global.nsUpdateExisting = false;
+global.allNCPAddons = [ 'copyfiles', 'default', 'eslint', 'husky', 'pot', 'prettier', 'version', 'webpack', 'wpdeploy' ];
 
 import { nsCreateProject } from './src/app.js';
 

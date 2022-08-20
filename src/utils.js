@@ -10,4 +10,8 @@ const nsSorter = ( data ) => {
 	return ordered;
 };
 
-export { nsSorter };
+const nsMergeObjects = ( first, second ) => {
+	return { ...first, ...second };
+};
+
+export { nsSorter, nsMergeObjects };

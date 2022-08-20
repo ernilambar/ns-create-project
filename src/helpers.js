@@ -8,7 +8,7 @@ import readLineSync from 'readline-sync';
 
 const { keyInYN } = readLineSync;
 
-import { nsSorter } from './utils.js';
+import { nsSorter, nsMergeObjects } from './utils.js';
 
 const nsFilesList = ( addons ) => {
 	const files = [];
@@ -57,161 +57,121 @@ const nsUpdatePackageJsonContent = ( content, mode ) => {
 	let jsonContent = JSON.parse( content );
 
 	if ( 'eslint' === mode ) {
-		const newScripts = {
+		jsonContent.scripts = nsMergeObjects( jsonContent.scripts, {
 			eslint: 'eslint --quiet .',
 			'eslint:fix': 'eslint --quiet --fix .',
-		};
+		} );
 
-		jsonContent.scripts = { ...jsonContent.scripts, ...newScripts };
-
-		const devDeps = {
+		jsonContent.devDependencies = nsMergeObjects( jsonContent.devDependencies, {
 			'@wordpress/eslint-plugin': '^12.8.0',
 			eslint: '^8.21.0',
-		};
-
-		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
-		jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
+		} );
 	}
 
 	if ( 'husky' === mode ) {
-		const newScripts = {
-			"prepare": "husky install",
-		};
+		jsonContent.scripts = nsMergeObjects( jsonContent.scripts, {
+			prepare: 'husky install',
+		} );
 
-		jsonContent.scripts = { ...jsonContent.scripts, ...newScripts };
-
-		const devDeps = {
-			"husky": "^8.0.1",
-			"lint-staged": "^13.0.3",
-			"@commitlint/cli": "^17.0.3",
-	    "@commitlint/config-conventional": "^17.0.3"
-		};
-
-		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
-		jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
+		jsonContent.devDependencies = nsMergeObjects( jsonContent.devDependencies, {
+			husky: '^8.0.1',
+			'lint-staged': '^13.0.3',
+			'@commitlint/cli': '^17.0.3',
+			'@commitlint/config-conventional': '^17.0.3',
+		} );
 	}
 
 	if ( 'prettier' === mode ) {
-		const newParams = {
+		jsonContent = nsMergeObjects( jsonContent, {
 			prettier: '@wordpress/prettier-config',
-		};
+		} );
 
-		jsonContent = { ...jsonContent, ...newParams };
-
-		const newScripts = {
+		jsonContent.scripts = nsMergeObjects( jsonContent.scripts, {
 			format: 'prettier --write "src/**/*.scss"',
-		};
+		} );
 
-		jsonContent.scripts = { ...jsonContent.scripts, ...newScripts };
-
-		const devDeps = {
+		jsonContent.devDependencies = nsMergeObjects( jsonContent.devDependencies, {
 			'@wordpress/prettier-config': '^1.4.0',
 			prettier: '^2.7.1',
-		};
-
-		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
-		jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
+		} );
 	}
 
 	if ( 'copyfiles' === mode ) {
-		const newScripts = {
-			"predeploy": "shx rm -rf vendor/ && composer install --no-dev --no-scripts -o",
+		jsonContent.scripts = nsMergeObjects( jsonContent.scripts, {
+			predeploy: 'shx rm -rf vendor/ && composer install --no-dev --no-scripts -o',
 			deploy: 'shx rm -rf deploy/ && shx mkdir deploy && copy-files-from-to && cd deploy/ && cross-var shx mv temp $npm_package_name && cross-var bestzip ../$npm_package_name.zip * && cd .. && cross-var shx mv $npm_package_name.zip deploy/',
-		};
+		} );
 
-		jsonContent.scripts = { ...jsonContent.scripts, ...newScripts };
-
-		const devDeps = {
+		jsonContent.devDependencies = nsMergeObjects( jsonContent.devDependencies, {
 			bestzip: '^2.2.1',
 			'copy-files-from-to': '^3.2.2',
 			'cross-var': '^1.1.0',
 			shx: '^0.3.4',
-		};
-
-		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
-		jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
+		} );
 	}
 
 	if ( 'wpdeploy' === mode ) {
-		const newScripts = {
+		jsonContent.scripts = nsMergeObjects( jsonContent.scripts, {
 			prewpdeploy: 'pnpm run deploy',
 			wpdeploy: 'grunt wpdeploy',
-		};
+		} );
 
-		jsonContent.scripts = { ...jsonContent.scripts, ...newScripts };
-
-		const devDeps = {
+		jsonContent.devDependencies = nsMergeObjects( jsonContent.devDependencies, {
 			grunt: '^1.5.3',
 			'grunt-wp-deploy': '^2.1.2',
-		};
-
-		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
-		jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
+		} );
 	}
 
 	if ( 'pot' === mode ) {
-		const newScripts = {
+		jsonContent.scripts = nsMergeObjects( jsonContent.scripts, {
 			pot: 'wpi18n makepot --domain-path=languages --exclude=vendor,deploy,node_modules',
 			textdomain: 'wpi18n addtextdomain --exclude=vendor,deploy,node_modules',
-		};
+		} );
 
-		jsonContent.scripts = { ...jsonContent.scripts, ...newScripts };
-
-		const devDeps = {
+		jsonContent.devDependencies = nsMergeObjects( jsonContent.devDependencies, {
 			'node-wp-i18n': '^1.2.6',
-		};
-
-		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
-		jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
+		} );
 	}
 
 	if ( 'version' === mode ) {
-		const newScripts = {
+		jsonContent.scripts = nsMergeObjects( jsonContent.scripts, {
 			version: 'easy-replace-in-files',
-		};
+		} );
 
-		jsonContent.scripts = { ...jsonContent.scripts, ...newScripts };
-
-		const devDeps = {
+		jsonContent.devDependencies = nsMergeObjects( jsonContent.devDependencies, {
 			'easy-replace-in-files': '^1.0.2',
-		};
-
-		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
-		jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
+		} );
 	}
 
 	if ( 'webpack' === mode ) {
-		const newScripts = {
-			"dev": "webpack --watch",
-			"build": "webpack",
-			"prod": "NODE_ENV=production webpack",
-		};
+		jsonContent.scripts = nsMergeObjects( jsonContent.scripts, {
+			dev: 'webpack --watch',
+			build: 'webpack',
+			prod: 'NODE_ENV=production webpack',
+		} );
 
-		jsonContent.scripts = { ...jsonContent.scripts, ...newScripts };
-
-		const devDeps = {
-			"@babel/cli": "^7.18.10",
-			"@babel/core": "^7.18.10",
-			"@babel/preset-env": "^7.18.10",
-			"babel-loader": "^8.2.5",
-			"clean-webpack-plugin": "^4.0.0",
-			"css-loader": "^6.7.1",
-			"css-minimizer-webpack-plugin": "^4.0.0",
-			"mini-css-extract-plugin": "^2.6.1",
-			"postcss": "^8.4.14",
-			"postcss-loader": "^7.0.1",
-			"postcss-preset-env": "^7.7.2",
-			"sass": "^1.54.3",
-			"sass-loader": "^13.0.2",
-			"style-loader": "^3.3.1",
-			"terser-webpack-plugin": "^5.3.3",
-			"webpack": "^5.74.0",
-			"webpack-cli": "^4.10.0"
-		};
-
-		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
-		jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
+		jsonContent.devDependencies = nsMergeObjects( jsonContent.devDependencies, {
+			'@babel/cli': '^7.18.10',
+			'@babel/core': '^7.18.10',
+			'@babel/preset-env': '^7.18.10',
+			'babel-loader': '^8.2.5',
+			'clean-webpack-plugin': '^4.0.0',
+			'css-loader': '^6.7.1',
+			'css-minimizer-webpack-plugin': '^4.0.0',
+			'mini-css-extract-plugin': '^2.6.1',
+			postcss: '^8.4.14',
+			'postcss-loader': '^7.0.1',
+			'postcss-preset-env': '^7.7.2',
+			sass: '^1.54.3',
+			'sass-loader': '^13.0.2',
+			'style-loader': '^3.3.1',
+			'terser-webpack-plugin': '^5.3.3',
+			webpack: '^5.74.0',
+			'webpack-cli': '^4.10.0',
+		} );
 	}
+
+	jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
 
 	return JSON.stringify( jsonContent, false, '  ' );
 };
@@ -265,37 +225,9 @@ const nsProcessFiles = ( projectName, addons ) => {
 	}
 
 	// Update packages.json file.
-	if ( addons.includes( 'eslint' ) ) {
-		packageContent = nsUpdatePackageJsonContent( packageContent, 'eslint' );
-	}
-
-	if ( addons.includes( 'husky' ) ) {
-		packageContent = nsUpdatePackageJsonContent( packageContent, 'husky' );
-	}
-
-	if ( addons.includes( 'prettier' ) ) {
-		packageContent = nsUpdatePackageJsonContent( packageContent, 'prettier' );
-	}
-
-	if ( addons.includes( 'copyfiles' ) ) {
-		packageContent = nsUpdatePackageJsonContent( packageContent, 'copyfiles' );
-	}
-
-	if ( addons.includes( 'wpdeploy' ) ) {
-		packageContent = nsUpdatePackageJsonContent( packageContent, 'wpdeploy' );
-	}
-
-	if ( addons.includes( 'pot' ) ) {
-		packageContent = nsUpdatePackageJsonContent( packageContent, 'pot' );
-	}
-
-	if ( addons.includes( 'version' ) ) {
-		packageContent = nsUpdatePackageJsonContent( packageContent, 'version' );
-	}
-
-	if ( addons.includes( 'webpack' ) ) {
-		packageContent = nsUpdatePackageJsonContent( packageContent, 'webpack' );
-	}
+	addons.forEach( function( addon ) {
+		packageContent = nsUpdatePackageJsonContent( packageContent, addon );
+	} );
 
 	// Write package.json file.
 	fs.writeFileSync( targetPackageFile, packageContent, function( err ) {
@@ -338,13 +270,13 @@ const nsProcessFiles = ( projectName, addons ) => {
 
 	if ( addons.includes( 'husky' ) ) {
 		const huskyMessage = `
-${ chalk.cyan.bold( "INFO" ) }: ${ chalk.cyan( "After package installation, run following commands to setup husky hooks." ) }
+${ chalk.cyan.bold( 'INFO' ) }: ${ chalk.cyan( 'After package installation, run following commands to setup husky hooks.' ) }
 
 ${ chalk.yellow( "npx husky add .husky/commit-msg 'npx commitlint --edit $1'" ) }
 ${ chalk.yellow( "npx husky add .husky/pre-commit 'npx lint-staged'" ) }
 `;
 		console.log( huskyMessage );
-	};
+	}
 };
 
 export { nsProcessFiles };
