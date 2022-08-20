@@ -11,13 +11,15 @@ const { keyInYN } = readLineSync;
 import { nsSorter } from './utils.js';
 
 const nsFilesList = ( addons ) => {
-	const files = [
-		{ src: 'templates/npmrc.txt', dest: '.npmrc' },
-		{ src: 'templates/.editorconfig', dest: '.editorconfig' },
-		{ src: 'templates/.env.example', dest: '.env.example' },
-		{ src: 'templates/.env', dest: '.env' },
-		{ src: 'templates/gitignore.txt', dest: '.gitignore' },
-	];
+	const files = [];
+
+	if ( addons.includes( 'default' ) ) {
+		files.push( { src: 'templates/npmrc.txt', dest: '.npmrc' } );
+		files.push( { src: 'templates/.editorconfig', dest: '.editorconfig' } );
+		files.push( { src: 'templates/.env.example', dest: '.env.example' } );
+		files.push( { src: 'templates/.env', dest: '.env' } );
+		files.push( { src: 'templates/gitignore.txt', dest: '.gitignore' } );
+	}
 
 	if ( addons.includes( 'eslint' ) ) {
 		files.push( { src: 'templates/.eslintignore', dest: '.eslintignore' } );
@@ -34,6 +36,10 @@ const nsFilesList = ( addons ) => {
 
 	if ( addons.includes( 'wpdeploy' ) ) {
 		files.push( { src: 'templates/Gruntfile.js', dest: 'Gruntfile.js' } );
+	}
+
+	if ( addons.includes( 'version' ) ) {
+		files.push( { src: 'templates/easy-replace-in-files.json', dest: 'easy-replace-in-files.json' } );
 	}
 
 	return files;
@@ -83,6 +89,7 @@ const nsUpdatePackageJsonContent = ( content, mode ) => {
 
 	if ( 'copyfiles' === mode ) {
 		const newScripts = {
+			"predeploy": "shx rm -rf vendor/ && composer install --no-dev --no-scripts -o",
 			deploy: 'shx rm -rf deploy/ && shx mkdir deploy && copy-files-from-to && cd deploy/ && cross-var shx mv temp $npm_package_name && cross-var bestzip ../$npm_package_name.zip * && cd .. && cross-var shx mv $npm_package_name.zip deploy/',
 		};
 
@@ -126,6 +133,21 @@ const nsUpdatePackageJsonContent = ( content, mode ) => {
 
 		const devDeps = {
 			'node-wp-i18n': '^1.2.6',
+		};
+
+		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
+		jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
+	}
+
+	if ( 'version' === mode ) {
+		const newScripts = {
+			version: 'easy-replace-in-files',
+		};
+
+		jsonContent.scripts = { ...jsonContent.scripts, ...newScripts };
+
+		const devDeps = {
+			'easy-replace-in-files': '^1.0.2',
 		};
 
 		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
@@ -202,6 +224,10 @@ const nsProcessFiles = ( projectName, addons ) => {
 
 	if ( addons.includes( 'pot' ) ) {
 		packageContent = nsUpdatePackageJsonContent( packageContent, 'pot' );
+	}
+
+	if ( addons.includes( 'version' ) ) {
+		packageContent = nsUpdatePackageJsonContent( packageContent, 'version' );
 	}
 
 	// Write package.json file.

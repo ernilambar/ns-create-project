@@ -9,7 +9,7 @@ import { nsProcessFiles } from './helpers.js';
 const nsCreateProject = ( projectName, flags ) => {
 	let addons = [];
 
-	const allAddons = [ 'eslint', 'prettier', 'copyfiles', 'wpdeploy', 'pot' ];
+	const allAddons = [ 'default', 'eslint', 'prettier', 'copyfiles', 'wpdeploy', 'pot', 'version' ];
 
 	if ( flags.include ) {
 		if ( 'all' === flags.include ) {

@@ -5,8 +5,8 @@
   "main": "index.js",
   "type": "module",
   "bin": {
-    "ns-create-project": "./index.js",
-    "ncp": "./index.js",
+    "nscp": "./index.js",
+    "ns-create-project": "./index.js"
   },
   "scripts": {
     "eslint": "eslint --quiet .",
