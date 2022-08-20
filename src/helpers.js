@@ -42,6 +42,10 @@ const nsFilesList = ( addons ) => {
 		files.push( { src: 'templates/easy-replace-in-files.json', dest: 'easy-replace-in-files.json' } );
 	}
 
+	if ( addons.includes( 'webpack' ) ) {
+		files.push( { src: 'templates/webpack.config.js', dest: 'webpack.config.js' } );
+	}
+
 	return files;
 };
 
@@ -154,6 +158,39 @@ const nsUpdatePackageJsonContent = ( content, mode ) => {
 		jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
 	}
 
+	if ( 'webpack' === mode ) {
+		const newScripts = {
+			"dev": "webpack --watch",
+			"build": "webpack",
+			"prod": "NODE_ENV=production webpack",
+		};
+
+		jsonContent.scripts = { ...jsonContent.scripts, ...newScripts };
+
+		const devDeps = {
+			"@babel/cli": "^7.18.10",
+			"@babel/core": "^7.18.10",
+			"@babel/preset-env": "^7.18.10",
+			"babel-loader": "^8.2.5",
+			"clean-webpack-plugin": "^4.0.0",
+			"css-loader": "^6.7.1",
+			"css-minimizer-webpack-plugin": "^4.0.0",
+			"mini-css-extract-plugin": "^2.6.1",
+			"postcss": "^8.4.14",
+			"postcss-loader": "^7.0.1",
+			"postcss-preset-env": "^7.7.2",
+			"sass": "^1.54.3",
+			"sass-loader": "^13.0.2",
+			"style-loader": "^3.3.1",
+			"terser-webpack-plugin": "^5.3.3",
+			"webpack": "^5.74.0",
+			"webpack-cli": "^4.10.0"
+		};
+
+		jsonContent.devDependencies = { ...jsonContent.devDependencies, ...devDeps };
+		jsonContent.devDependencies = nsSorter( jsonContent.devDependencies );
+	}
+
 	return JSON.stringify( jsonContent, false, '  ' );
 };
 
@@ -228,6 +265,10 @@ const nsProcessFiles = ( projectName, addons ) => {
 
 	if ( addons.includes( 'version' ) ) {
 		packageContent = nsUpdatePackageJsonContent( packageContent, 'version' );
+	}
+
+	if ( addons.includes( 'webpack' ) ) {
+		packageContent = nsUpdatePackageJsonContent( packageContent, 'webpack' );
 	}
 
 	// Write package.json file.
