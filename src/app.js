@@ -4,7 +4,7 @@ import readLineSync from 'readline-sync';
 
 const { keyInYN } = readLineSync;
 
-import { nsProcessFiles } from './helpers.js';
+import { ncpProcessFiles } from './helpers.js';
 
 const nsCreateProject = ( projectName, flags ) => {
 	let addons = [];
@@ -35,7 +35,7 @@ const nsCreateProject = ( projectName, flags ) => {
 		}
 	}
 
-	nsProcessFiles( projectName, addons );
+	ncpProcessFiles( projectName, addons );
 };
 
 export { nsCreateProject };

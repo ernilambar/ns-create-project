@@ -17,7 +17,8 @@
     "url": "git+https://github.com/ernilambar/ns-create-project.git"
   },
   "keywords": [
-    "cli", "template"
+    "cli",
+    "template"
   ],
   "author": "",
   "license": "MIT",
@@ -29,6 +30,7 @@
     "@babel/core": "^7.18.10",
     "chalk": "^5.0.1",
     "meow": "^10.1.3",
+    "mergician": "^1.0.3",
     "mustache": "^4.2.0",
     "readline-sync": "^1.4.10"
   },
