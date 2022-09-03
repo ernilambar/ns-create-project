@@ -17,6 +17,7 @@ const ncpProcessFiles = (projectName, addons) => {
 
   if (nsUpdateExisting === true) {
     destPath = process.cwd()
+    projectName = path.basename(process.cwd())
   } else {
     destPath = path.join(process.cwd(), projectName)
   }
