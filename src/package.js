@@ -111,14 +111,22 @@ const ncpUpdatePackageJsonContent = ( content, modes ) => {
 	}
 
 	if ( modes.includes( 'wpdeploy' ) ) {
+		packageObject.add( {
+			wpDeployer: {
+				repoType: 'plugin',
+				username: 'yourusername',
+				buildDir: 'deploy/project-name',
+				deployAssets: false,
+			},
+		} );
+
 		packageObject.add( { scripts: {
 			prewpdeploy: 'pnpm run deploy',
-			wpdeploy: 'grunt wpdeploy',
+			wpdeploy: 'wp-deployer',
 		} } );
 
 		packageObject.add( { devDependencies: {
-			grunt: '^1.5.3',
-			'grunt-wp-deploy': '^2.1.2',
+			'wp-deployer': '^1.0.3',
 		} } );
 	}
 

@@ -38,10 +38,6 @@ const ncpFilesList = ( addons ) => {
 		files.push( { src: 'templates/webpack.config.js', dest: 'webpack.config.js' } );
 	}
 
-	if ( addons.includes( 'wpdeploy' ) ) {
-		files.push( { src: 'templates/Gruntfile.js', dest: 'Gruntfile.js' } );
-	}
-
 	return files;
 };
 
