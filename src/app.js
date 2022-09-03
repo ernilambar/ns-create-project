@@ -1,41 +1,41 @@
-import chalk from 'chalk';
+import chalk from 'chalk'
 
-import readLineSync from 'readline-sync';
+import readLineSync from 'readline-sync'
 
-const { keyInYN } = readLineSync;
+import { ncpProcessFiles } from './helpers.js'
 
-import { ncpProcessFiles } from './helpers.js';
+const { keyInYN } = readLineSync
 
-const nsCreateProject = ( projectName, flags ) => {
-	let addons = [];
+const nsCreateProject = (projectName, flags) => {
+  let addons = []
 
-	if ( flags.include ) {
-		if ( 'all' === flags.include ) {
-			addons = allNCPAddons;
-		} else {
-			addons = flags.include.split( ',' );
-		}
-	}
+  if (flags.include) {
+    if (flags.include === 'all') {
+      addons = allNCPAddons
+    } else {
+      addons = flags.include.split(',')
+    }
+  }
 
-	if ( ! projectName || 'undefined' === projectName ) {
-		if ( ! keyInYN( `${ chalk.green( '<project-name>' ) } is not passed. Do you want to update existing folder?` ) ) {
-			// Key that is not `Y` was pressed.
-			process.exit();
-		}
+  if (!projectName || projectName === 'undefined') {
+    if (!keyInYN(`${chalk.green('<project-name>')} is not passed. Do you want to update existing folder?`)) {
+      // Key that is not `Y` was pressed.
+      process.exit()
+    }
 
-		nsUpdateExisting = true;
-	}
+    nsUpdateExisting = true
+  }
 
-	if ( false === nsUpdateExisting ) {
-		const isValidName = ( /^([a-z\-\\_\d])+$/.test( projectName ) ) ? true : false;
+  if (nsUpdateExisting === false) {
+    const isValidName = !!(/^([a-z\-\\_\d])+$/.test(projectName))
 
-		if ( ! isValidName ) {
-			console.error( `${ chalk.red( 'ERROR:' ) } Project name ${ chalk.bold.green( projectName ) } is invalid. Accepts small letters, numbers, dash and underscores.` );
-			process.exit();
-		}
-	}
+    if (!isValidName) {
+      console.error(`${chalk.red('ERROR:')} Project name ${chalk.bold.green(projectName)} is invalid. Accepts small letters, numbers, dash and underscores.`)
+      process.exit()
+    }
+  }
 
-	ncpProcessFiles( projectName, addons );
-};
+  ncpProcessFiles(projectName, addons)
+}
 
-export { nsCreateProject };
+export { nsCreateProject }

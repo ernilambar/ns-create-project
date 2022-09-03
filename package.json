@@ -1,6 +1,6 @@
 {
   "name": "ns-create-project",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "",
   "main": "index.js",
   "type": "module",
@@ -9,8 +9,8 @@
     "ns-create-project": "./index.js"
   },
   "scripts": {
-    "eslint": "eslint --quiet .",
-    "eslint:fix": "eslint --quiet --fix ."
+    "lint": "standard",
+    "lint:fix": "standard --fix"
   },
   "repository": {
     "type": "git",
@@ -26,6 +26,9 @@
     "url": "https://github.com/ernilambar/ns-create-project/issues"
   },
   "homepage": "https://github.com/ernilambar/ns-create-project#readme",
+  "standard": {
+    "globals": [ "allNCPAddons", "nsUpdateExisting", "__basedir" ]
+  },
   "dependencies": {
     "@babel/core": "^7.18.10",
     "chalk": "^5.0.1",
@@ -35,7 +38,6 @@
     "readline-sync": "^1.4.10"
   },
   "devDependencies": {
-    "@wordpress/eslint-plugin": "^12.9.0",
-    "eslint": "^8.21.0"
+    "standard": "^17.0.0"
   }
 }
