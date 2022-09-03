@@ -145,7 +145,7 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
       wpDeployer: {
         repoType: 'plugin',
         username: 'yourusername',
-        buildDir: 'deploy/project-name',
+        buildDir: `deploy/${packageObject.jsonContent.name}`,
         deployAssets: false
       }
     })
