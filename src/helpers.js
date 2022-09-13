@@ -149,6 +149,18 @@ ${chalk.yellow("npx husky add .husky/pre-commit 'npx lint-staged'")}
 `
     console.log(huskyMessage)
   }
+
+  if (addons.includes('freemius')) {
+    const freemiusMessage = `
+${chalk.cyan.bold('INFO')}: ${chalk.cyan('After package installation, plase update env file.')}
+
+${chalk.yellow('FS__API_DEV_ID=12345')}
+${chalk.yellow('FS__API_PLUGIN_ID=12345')}
+${chalk.yellow('FS__API_PUBLIC_KEY="pk_YOUR_PUBLIC_KEY"')}
+${chalk.yellow('FS__API_SECRET_KEY="sk_YOUR_SECRET_KEY"')}
+`
+    console.log(freemiusMessage)
+  }
 }
 
 export { ncpProcessFiles }

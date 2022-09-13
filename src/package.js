@@ -37,6 +37,29 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
     })
   }
 
+  if (modes.includes('freemius')) {
+    packageObject.add({
+      freemiusDeployer: {
+        zipPath: 'deploy/',
+        zipName: `${packageObject.jsonContent.name}.zip`,
+        addContributor: false
+      }
+    })
+
+    packageObject.add({
+      scripts: {
+        prefdeploy: 'pnpm run deploy',
+        fdeploy: 'freemius-deployer'
+      }
+    })
+
+    packageObject.add({
+      devDependencies: {
+        'freemius-deployer': '^1.0.2'
+      }
+    })
+  }
+
   if (modes.includes('husky')) {
     packageObject.add({
       scripts: {

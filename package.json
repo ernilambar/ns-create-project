@@ -1,6 +1,6 @@
 {
   "name": "ns-create-project",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "",
   "main": "index.js",
   "type": "module",
@@ -27,7 +27,11 @@
   },
   "homepage": "https://github.com/ernilambar/ns-create-project#readme",
   "standard": {
-    "globals": [ "allNCPAddons", "nsUpdateExisting", "__basedir" ]
+    "globals": [
+      "allNCPAddons",
+      "nsUpdateExisting",
+      "__basedir"
+    ]
   },
   "dependencies": {
     "@babel/core": "^7.18.10",
