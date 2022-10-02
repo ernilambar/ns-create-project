@@ -24,6 +24,7 @@ const ncpFilesList = (addons) => {
 
   if (addons.includes('phpcs')) {
     files.push({ src: 'templates/.phpcs.xml.dist', dest: '.phpcs.xml.dist' })
+    files.push({ src: 'templates/.phpcompat.xml.dist', dest: '.phpcompat.xml.dist' })
   }
 
   if (addons.includes('prettier')) {
