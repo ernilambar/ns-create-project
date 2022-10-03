@@ -1,11 +1,10 @@
 {
   "name": "ns-create-project",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "",
   "main": "index.js",
   "type": "module",
   "bin": {
-    "nscp": "./index.js",
     "ns-create-project": "./index.js"
   },
   "scripts": {
