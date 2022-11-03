@@ -31,8 +31,8 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
 
     packageObject.add({
       devDependencies: {
-        '@wordpress/eslint-plugin': '^12.8.0',
-        eslint: '^8.21.0'
+        '@wordpress/eslint-plugin': '^13.5.0',
+        eslint: '^8.26.0'
       }
     })
   }
@@ -55,7 +55,7 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
 
     packageObject.add({
       devDependencies: {
-        'freemius-deployer': '^1.0.2'
+        'freemius-deployer': '^1.0.3'
       }
     })
   }
@@ -71,8 +71,8 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
       devDependencies: {
         husky: '^8.0.1',
         'lint-staged': '^13.0.3',
-        '@commitlint/cli': '^17.0.3',
-        '@commitlint/config-conventional': '^17.0.3'
+        '@commitlint/cli': '^17.2.0',
+        '@commitlint/config-conventional': '^17.2.0'
       }
     })
 
@@ -111,7 +111,7 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
 
     packageObject.add({
       devDependencies: {
-        '@wordpress/prettier-config': '^1.4.0',
+        '@wordpress/prettier-config': '^2.4.0',
         prettier: '^2.7.1'
       }
     })
@@ -126,7 +126,7 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
 
     packageObject.add({
       devDependencies: {
-        'easy-replace-in-files': '^1.0.2'
+        'easy-replace-in-files': '^1.0.3'
       }
     })
   }
