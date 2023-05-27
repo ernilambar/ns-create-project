@@ -7,14 +7,14 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
     packageObject.add({
       scripts: {
         predeploy: 'shx rm -rf vendor/ && composer install --no-dev --no-scripts -o',
-        deploy: 'shx rm -rf deploy/ && shx mkdir deploy && copy-files-from-to && cd deploy/ && cross-var shx mv temp $npm_package_name && cross-var bestzip ../$npm_package_name.zip * && cd .. && cross-var shx mv $npm_package_name.zip deploy/'
+        deploy: 'shx rm -rf deploy/ && shx mkdir deploy && copy-files-from-to --silent && cd deploy/ && cross-var shx mv temp $npm_package_name && cross-var bestzip ../$npm_package_name.zip * && cd .. && cross-var shx mv $npm_package_name.zip deploy/'
       }
     })
 
     packageObject.add({
       devDependencies: {
         bestzip: '^2.2.1',
-        'copy-files-from-to': '^3.2.2',
+        'copy-files-from-to': '^3.9.0',
         'cross-var': '^1.1.0',
         shx: '^0.3.4'
       }
@@ -31,8 +31,8 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
 
     packageObject.add({
       devDependencies: {
-        '@wordpress/eslint-plugin': '^13.5.0',
-        eslint: '^8.26.0'
+        '@wordpress/eslint-plugin': '^14.7.0',
+        eslint: '^8.41.0'
       }
     })
   }
@@ -69,10 +69,10 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
 
     packageObject.add({
       devDependencies: {
-        husky: '^8.0.1',
-        'lint-staged': '^13.0.3',
-        '@commitlint/cli': '^17.2.0',
-        '@commitlint/config-conventional': '^17.2.0'
+        husky: '^8.0.3',
+        'lint-staged': '^13.2.2',
+        '@commitlint/cli': '^17.6.3',
+        '@commitlint/config-conventional': '^17.6.3'
       }
     })
 
@@ -93,7 +93,7 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
 
     packageObject.add({
       devDependencies: {
-        'node-wp-i18n': '^1.2.6'
+        'node-wp-i18n': '^1.2.7'
       }
     })
   }
@@ -111,8 +111,8 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
 
     packageObject.add({
       devDependencies: {
-        '@wordpress/prettier-config': '^2.4.0',
-        prettier: '^2.7.1'
+        '@wordpress/prettier-config': '^2.17.0',
+        prettier: '^2.8.8'
       }
     })
   }

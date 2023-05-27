@@ -23,10 +23,15 @@ tmp/
 # Environment files
 .env
 
+# Setup
 wp-cli.local.yml
 yarn-error.log
 npm-debug.log
 .pnpm-debug.log
+
+# Local files
+local-phpinfo.php
+local-xdebuginfo.php
 
 # Ignored extensions
 *~
@@ -46,8 +51,8 @@ npm-debug.log
 .sass-cache/
 
 # Project folders
-build/
-deploy/
-docs/
-node_modules/
-vendor/
+/build/
+/deploy/
+/docs/
+/node_modules/
+/vendor/

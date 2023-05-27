@@ -5,20 +5,20 @@ const ncpUpdateComposerJsonContent = (jsonContent) => {
 
   composerObject.add({
     scripts: {
-      'pc:info': '@php ./vendor/squizlabs/php_codesniffer/bin/phpcs -i',
-      'pc:config': '@php ./vendor/squizlabs/php_codesniffer/bin/phpcs --config-show',
-      lint: '@php ./vendor/squizlabs/php_codesniffer/bin/phpcs --report-full --report-summary .',
+      'pc:info': '@php ./vendor/bin/phpcs -i',
+      'pc:config': '@php ./vendor/bin/phpcs --config-show',
+      lint: '@php ./vendor/bin/phpcs --report-full --report-summary .',
       'lint:error': '@lint -n',
-      'lint:fix': '@php ./vendor/squizlabs/php_codesniffer/bin/phpcbf --report-full --report-summary .',
-      compat: '@php ./vendor/squizlabs/php_codesniffer/bin/phpcs --standard=.phpcompat.xml.dist --report-full --report-summary .'
+      'lint:fix': '@php ./vendor/bin/phpcbf --report-full --report-summary .',
+      compat: '@php ./vendor/bin/phpcs --standard=.phpcompat.xml.dist --report-full --report-summary .'
     }
   })
 
   composerObject.add({
     'require-dev': {
-      'dealerdirect/phpcodesniffer-composer-installer': '^0.7.2',
+      'dealerdirect/phpcodesniffer-composer-installer': '^1.0',
       'phpcompatibility/phpcompatibility-wp': '^2.1',
-      'wp-coding-standards/wpcs': '^2.3'
+      'wp-coding-standards/wpcs': 'dev-develop'
     }
   })
 
