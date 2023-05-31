@@ -24,7 +24,6 @@ const ncpUpdateComposerJsonContent = (jsonContent) => {
 
   composerObject.add({
     config: {
-      'sort-packages': true,
       'allow-plugins': {
         'dealerdirect/phpcodesniffer-composer-installer': true
       }
