@@ -35,6 +35,11 @@ const ncpFilesList = (addons) => {
     files.push({ src: 'templates/webpack.config.js', dest: 'webpack.config.js' })
   }
 
+  if (addons.includes('wpscripts')) {
+    files.push({ src: 'templates/webpack.config.wp.js', dest: 'webpack.config.js' })
+    files.push({ src: 'templates/.eslintrc.json', dest: '.eslintrc.json' })
+  }
+
   return files
 }
 

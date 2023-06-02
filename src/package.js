@@ -161,6 +161,29 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
     })
   }
 
+  if (modes.includes('wpscripts')) {
+    packageObject.add({
+      scripts: {
+        dev: 'wp-scripts start',
+        build: 'wp-scripts build',
+        'lint:css': "wp-scripts lint-style 'src/**/*.{css,scss}'",
+        'lint:css:fix': "wp-scripts lint-style 'src/**/*.{css,scss}' --fix",
+        'lint:js': 'wp-scripts lint-js ./src webpack.config.js',
+        'lint:js:fix': 'wp-scripts lint-js ./src webpack.config.js --fix',
+        'lint:json:fix': 'wp-scripts format composer.json package.json'
+      }
+    })
+
+    packageObject.add({
+      devDependencies: {
+        '@wordpress/scripts': '^26.5.0',
+        'browser-sync': '^2.29.3',
+        'browser-sync-webpack-plugin': '^2.3.0',
+        dotenv: '^16.1.3'
+      }
+    })
+  }
+
   if (modes.includes('wpdeploy')) {
     packageObject.add({
       wpDeployer: {
