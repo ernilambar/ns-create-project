@@ -6,17 +6,22 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
   if (modes.includes('copyfiles')) {
     packageObject.add({
       scripts: {
-        predeploy: 'shx rm -rf vendor/ && composer install --no-dev --no-scripts -o',
-        deploy: 'shx rm -rf deploy/ && shx mkdir deploy && copy-files-from-to --silent && cd deploy/ && cross-var shx mv temp $npm_package_name && cross-var bestzip ../$npm_package_name.zip * && cd .. && cross-var shx mv $npm_package_name.zip deploy/'
+        "ready:vendor": "shx rm -rf vendor/ && composer install --no-dev --no-scripts -o",
+        predeploy: 'pnpm run ready:vendor',
+        deploy: 'packtor'
       }
     })
 
     packageObject.add({
       devDependencies: {
-        bestzip: '^2.2.1',
-        'copy-files-from-to': '^3.9.0',
-        'cross-var': '^1.1.0',
+        packtor: '^1.0.2',
         shx: '^0.3.4'
+      }
+    })
+
+    packageObject.add({
+      packtor: {
+        files: ["**/*", "!*.js", "!*.json", "!*.lock", "!*.lockb", "!*.yaml"]
       }
     })
   }
