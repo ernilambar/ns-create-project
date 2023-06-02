@@ -84,8 +84,8 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
   if (modes.includes('pot')) {
     packageObject.add({
       scripts: {
-        pot: 'wpi18n makepot --domain-path=languages --exclude=vendor,deploy,node_modules',
-        textdomain: 'wpi18n addtextdomain --exclude=vendor,deploy,node_modules'
+        td: 'wpi18n addtextdomain --exclude=vendor,deploy,node_modules',
+        pot: 'wpi18n makepot --domain-path=languages --exclude=vendor,deploy,node_modules'
       }
     })
 
