@@ -6,7 +6,7 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
   if (modes.includes('copyfiles')) {
     packageObject.add({
       scripts: {
-        "ready:vendor": "shx rm -rf vendor/ && composer install --no-dev --no-scripts -o",
+        'ready:vendor': 'shx rm -rf vendor/ && composer install --no-dev --no-scripts -o',
         predeploy: 'pnpm run ready:vendor',
         deploy: 'packtor'
       }
@@ -21,7 +21,7 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
 
     packageObject.add({
       packtor: {
-        files: ["**/*", "!*.js", "!*.json", "!*.lock", "!*.lockb", "!*.yaml"]
+        files: ['**/*', '!*.js', '!*.json', '!*.lock', '!*.lockb', '!*.yaml']
       }
     })
   }
