@@ -68,22 +68,15 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
   if (modes.includes('husky')) {
     packageObject.add({
       scripts: {
-        prepare: 'husky install'
+        prepare: 'husky install && pnpm run prepare:hooks',
+        'prepare:hooks': 'pnpm dlx husky add .husky/pre-commit "pnpm dlx lint-staged"'
       }
     })
 
     packageObject.add({
       devDependencies: {
         husky: '^8.0.3',
-        'lint-staged': '^13.2.2',
-        '@commitlint/cli': '^17.6.3',
-        '@commitlint/config-conventional': '^17.6.3'
-      }
-    })
-
-    packageObject.add({
-      commitlint: {
-        extends: '@commitlint/config-conventional'
+        'lint-staged': '^13.2.2'
       }
     })
   }
