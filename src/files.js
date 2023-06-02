@@ -9,10 +9,6 @@ const ncpFilesList = (addons) => {
     files.push({ src: 'templates/gitignore.txt', dest: '.gitignore' })
   }
 
-  if (addons.includes('copyfiles')) {
-    files.push({ src: 'templates/copy-files-from-to.json', dest: 'copy-files-from-to.json' })
-  }
-
   if (addons.includes('eslint')) {
     files.push({ src: 'templates/.eslintignore', dest: '.eslintignore' })
     files.push({ src: 'templates/.eslintrc.json', dest: '.eslintrc.json' })
