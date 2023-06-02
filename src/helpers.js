@@ -49,7 +49,8 @@ const ncpProcessFiles = (projectName, addons) => {
         const contents = fs.readFileSync(pkgMustache)
 
         const data = {
-          project_name: projectName
+          project_name: projectName,
+          project_title: ncpGetTitle(projectName)
         }
 
         packageContent = Mustache.render(contents.toString(), data)
@@ -86,7 +87,8 @@ const ncpProcessFiles = (projectName, addons) => {
         const contents = fs.readFileSync(pkgMustache)
 
         const data = {
-          project_name: projectName
+          project_name: projectName,
+          project_title: ncpGetTitle(projectName)
         }
 
         composerContent = Mustache.render(contents.toString(), data)
@@ -153,4 +155,10 @@ ${chalk.yellow('FS__API_SECRET_KEY="sk_YOUR_SECRET_KEY"')}
   }
 }
 
-export { ncpProcessFiles }
+function ncpGetTitle (slug) {
+  return slug.replace(/-/g, ' ').replace(/\b[a-z]/g, function () {
+    return arguments[0].toUpperCase()
+  })
+}
+
+export { ncpProcessFiles, ncpGetTitle }
