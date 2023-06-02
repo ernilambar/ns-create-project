@@ -140,16 +140,6 @@ const ncpProcessFiles = (projectName, addons) => {
 
   console.log(chalk.cyan('Completed!'))
 
-  if (addons.includes('husky')) {
-    const huskyMessage = `
-${chalk.cyan.bold('INFO')}: ${chalk.cyan('After package installation, run following commands to setup husky hooks.')}
-
-${chalk.yellow("npx husky add .husky/commit-msg 'npx commitlint --edit $1'")}
-${chalk.yellow("npx husky add .husky/pre-commit 'npx lint-staged'")}
-`
-    console.log(huskyMessage)
-  }
-
   if (addons.includes('freemius')) {
     const freemiusMessage = `
 ${chalk.cyan.bold('INFO')}: ${chalk.cyan('After package installation, plase update env file.')}
