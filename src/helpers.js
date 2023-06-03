@@ -6,13 +6,14 @@ import chalk from 'chalk'
 
 import readLineSync from 'readline-sync'
 
+import { ncpGetTitle } from './utils.js'
 import { ncpFilesList } from './files.js'
 import { ncpUpdatePackageJsonContent } from './package.js'
 import { ncpUpdateComposerJsonContent } from './composer.js'
 
 const { keyInYN } = readLineSync
 
-const ncpProcessFiles = (projectName, addons) => {
+const ncpProcessFiles = (projectName, addons, pm) => {
   let destPath = ''
 
   if (nsUpdateExisting === true) {
@@ -63,7 +64,7 @@ const ncpProcessFiles = (projectName, addons) => {
     }
 
     // Update package.json file.
-    packageContent = ncpUpdatePackageJsonContent(JSON.parse(packageContent), addons)
+    packageContent = ncpUpdatePackageJsonContent(JSON.parse(packageContent), addons, pm)
 
     // Write package.json file.
     fs.writeFileSync(targetPackageFile, JSON.stringify(packageContent, '', '  '), function (err) {
@@ -155,10 +156,4 @@ ${chalk.yellow('FS__API_SECRET_KEY="sk_YOUR_SECRET_KEY"')}
   }
 }
 
-function ncpGetTitle (slug) {
-  return slug.replace(/-/g, ' ').replace(/\b[a-z]/g, function () {
-    return arguments[0].toUpperCase()
-  })
-}
-
-export { ncpProcessFiles, ncpGetTitle }
+export { ncpProcessFiles }
