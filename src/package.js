@@ -1,13 +1,16 @@
 import Jsoner from './jsoner.js'
 
-const ncpUpdatePackageJsonContent = (content, modes) => {
+import { ncpGetPmx } from './utils.js'
+
+const ncpUpdatePackageJsonContent = (content, modes, pm) => {
+  const pmx = ncpGetPmx(pm)
   const packageObject = new Jsoner(content)
 
   if (modes.includes('copyfiles')) {
     packageObject.add({
       scripts: {
         'ready:vendor': 'shx rm -rf vendor/ && composer install --no-dev --no-scripts -o',
-        predeploy: 'pnpm run ready:vendor',
+        predeploy: `${pm} run ready:vendor`,
         deploy: 'packtor'
       }
     })
@@ -21,7 +24,7 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
 
     packageObject.add({
       packtor: {
-        files: ['**/*', '!*.js', '!*.json', '!*.lock', '!*.lockb', '!*.yaml']
+        files: ['**/*', '!*.js', '!*.json', '!*.lock', '!*.yaml']
       }
     })
   }
@@ -53,7 +56,7 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
 
     packageObject.add({
       scripts: {
-        prefdeploy: 'pnpm run deploy',
+        prefdeploy: `${pm} run deploy`,
         fdeploy: 'freemius-deployer'
       }
     })
@@ -68,8 +71,8 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
   if (modes.includes('husky')) {
     packageObject.add({
       scripts: {
-        prepare: 'husky install && pnpm run prepare:hooks',
-        'prepare:hooks': 'pnpm dlx husky add .husky/pre-commit "pnpm dlx lint-staged"'
+        prepare: `husky install && ${pm} run prepare:hooks`,
+        'prepare:hooks': `${pmx} husky add .husky/pre-commit "${pmx} lint-staged"`
       }
     })
 
@@ -140,23 +143,23 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
 
     packageObject.add({
       devDependencies: {
-        '@babel/cli': '^7.18.10',
-        '@babel/core': '^7.18.10',
-        '@babel/preset-env': '^7.18.10',
-        'babel-loader': '^8.2.5',
+        '@babel/cli': '^7.21.5',
+        '@babel/core': '^7.22.1',
+        '@babel/preset-env': '^7.22.4',
+        'babel-loader': '^9.1.2',
         'clean-webpack-plugin': '^4.0.0',
-        'css-loader': '^6.7.1',
-        'css-minimizer-webpack-plugin': '^4.0.0',
-        'mini-css-extract-plugin': '^2.6.1',
-        postcss: '^8.4.14',
-        'postcss-loader': '^7.0.1',
-        'postcss-preset-env': '^7.7.2',
-        sass: '^1.54.3',
-        'sass-loader': '^13.0.2',
-        'style-loader': '^3.3.1',
-        'terser-webpack-plugin': '^5.3.3',
-        webpack: '^5.74.0',
-        'webpack-cli': '^4.10.0'
+        'css-loader': '^6.8.1',
+        'css-minimizer-webpack-plugin': '^5.0.0',
+        'mini-css-extract-plugin': '^2.7.6',
+        postcss: '^8.4.24',
+        'postcss-loader': '^7.3.2',
+        'postcss-preset-env': '^8.4.2',
+        sass: '^1.62.1',
+        'sass-loader': '^13.3.1',
+        'style-loader': '^3.3.3',
+        'terser-webpack-plugin': '^5.3.9',
+        webpack: '^5.85.0',
+        'webpack-cli': '^5.1.1'
       }
     })
   }
@@ -196,7 +199,7 @@ const ncpUpdatePackageJsonContent = (content, modes) => {
 
     packageObject.add({
       scripts: {
-        prewpdeploy: 'pnpm run deploy',
+        prewpdeploy: `${pm} run deploy`,
         wpdeploy: 'wp-deployer'
       }
     })

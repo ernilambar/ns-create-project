@@ -1,6 +1,6 @@
 {
   "name": "ns-create-project",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "",
   "main": "index.js",
   "type": "module",
@@ -19,7 +19,7 @@
     "cli",
     "template"
   ],
-  "author": "",
+  "author": "Nilambar Sharma <nilambar@outlook.com> (https://www.nilambar.net/)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/ernilambar/ns-create-project/issues"
@@ -33,14 +33,13 @@
     ]
   },
   "dependencies": {
-    "@babel/core": "^7.19.3",
-    "chalk": "^5.0.1",
-    "meow": "^10.1.4",
-    "mergician": "^1.0.3",
+    "chalk": "^5.2.0",
+    "meow": "^12.0.1",
+    "mergician": "^1.1.0",
     "mustache": "^4.2.0",
     "readline-sync": "^1.4.10"
   },
   "devDependencies": {
-    "standard": "^17.0.0"
+    "standard": "^17.1.0"
   }
 }

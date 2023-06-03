@@ -1,5 +1,8 @@
-assets/
-deploy/
-node_modules/
-third-party/
-vendor/
+assets
+bower_components
+build
+deploy
+node_modules
+third-party
+vendor
+!.*.js

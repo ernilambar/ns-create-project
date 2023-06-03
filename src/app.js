@@ -35,7 +35,7 @@ const nsCreateProject = (projectName, flags) => {
     }
   }
 
-  ncpProcessFiles(projectName, addons)
+  ncpProcessFiles(projectName, addons, flags.pm)
 }
 
 export { nsCreateProject }

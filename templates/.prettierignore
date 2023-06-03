@@ -1,2 +1,7 @@
+assets
+bower_components
+build
+deploy
 node_modules
-src/sass/vendors
+third-party
+vendor
