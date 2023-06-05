@@ -24,7 +24,7 @@ const ncpUpdatePackageJsonContent = (content, modes, pm) => {
 
     packageObject.add({
       packtor: {
-        files: ['**/*', '!*.js', '!*.json', '!*.lock', '!*.yaml']
+        files: ['**/*', '!*.js', '!*.json', '!*.lock', '!*.yaml', '!src/**/*']
       }
     })
   }
