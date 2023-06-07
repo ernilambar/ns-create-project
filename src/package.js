@@ -173,7 +173,8 @@ const ncpUpdatePackageJsonContent = (content, modes, pm) => {
         'lint:css:fix': "wp-scripts lint-style 'src/**/*.{css,scss}' --fix",
         'lint:js': 'wp-scripts lint-js ./src webpack.config.js',
         'lint:js:fix': 'wp-scripts lint-js ./src webpack.config.js --fix',
-        'lint:json:fix': 'wp-scripts format composer.json package.json'
+        'lint:json:fix': 'wp-scripts format *.json',
+        'lint:pkg': 'wp-scripts lint-pkg-json'
       }
     })
 
